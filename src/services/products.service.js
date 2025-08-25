@@ -3,7 +3,7 @@ const productsDAO = require('../dao/products.dao');
 const { VALID_CATEGORIES, PAGINATION, FILTERS } = require('../../config/config');
 
 class ProductsService {
-  // --- Helpers de unicidad y validación -----------------------------
+  // ------------- Helpers de unicidad y validación -------------------
 
   async assertUniqueCode(code, excludeId = null) {
     const all = await productsDAO.getAllProducts();

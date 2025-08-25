@@ -13,7 +13,6 @@ const config = {
   // Categorías válidas de productos
   VALID_CATEGORIES: ['replicas', 'magazines', 'bbs', 'batteries'],
 
-  // (Se elimina VALID_STATUSES: la consigna pide status booleano)
 
   // Configuraciones de paginación
   PAGINATION: {
