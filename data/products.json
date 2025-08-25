@@ -1,0 +1,765 @@
+[
+  {
+    "id": "3a009a41-1948-458f-8599-84f4a0dc0f1a",
+    "title": "APS AEG ASK209 AK74 Tactical Advanced Blowback - Black",
+    "description": "Réplica AEG tipo AK74 de APS con Gearbox híbrida V3 cableada al frente y a la culata, permitiendo usar dos baterías en simultáneo (stick en tapa superior o nunchuck en culata tipo crane). Incluye rodamientos de 8 mm, blowback realista, liberación de cargador ergonómica y selector modificado accesible con el dedo. Guardamanos con empuñadura angular instalada, culata retráctil de seis posiciones y riel superior flat‑top para ópticas.",
+    "price": 209,
+    "category": "replicas",
+    "status": "active",
+    "stock": 16,
+    "brand": "APS",
+    "model": "ASK209",
+    "thumbnails": [
+      "https://www.arsenalsports.com/img/12809/produtos/1200/dd04e27c4689026eae798eba93b695fc.jpg"
+    ],
+    "tags": [
+      "aeg",
+      "ak74",
+      "blowback"
+    ],
+    "specs": {
+      "caliber": "6mm",
+      "weight": 3400,
+      "length": 901,
+      "firingMode": "Safe/Semi-Auto/Full-Auto",
+      "hopUp": true
+    },
+    "attributes": {
+      "platform": "AEG",
+      "fps_0_20": 430,
+      "gearbox": "V3 híbrida (8mm)",
+      "mag_capacity": 500,
+      "mag_type": "hicap",
+      "connector": "Mini Tamiya",
+      "battery_recommendation": "NiMH 9.6V Stick"
+    },
+    "createdAt": "2025-08-20T22:41:46.982Z",
+    "updatedAt": "2025-08-20T22:41:46.983Z"
+  },
+  {
+    "id": "f82c64ad-dfb4-42f5-b9fd-7057824989c1",
+    "title": "CYMA AEG G36C Sport ABS con Gearbox V3 - Black",
+    "description": "G36C AEG con hop‑up ajustable accesible al accionar la palanca de carga. Gearbox V3 actualizable, pistón ABS con camisa de aluminio y engranajes de acero. Riel picatinny superior largo y riel inferior adicional para accesorios. Conector Small Tamiya.",
+    "price": 126,
+    "category": "replicas",
+    "status": "active",
+    "stock": 25,
+    "brand": "CYMA",
+    "model": "CM.011",
+    "thumbnails": [
+      "https://www.arsenalsports.com/img/26091/produtos/1200/775b07d8d0aea0631cc629d733684d62.jpg"
+    ],
+    "tags": [
+      "aeg",
+      "g36c"
+    ],
+    "specs": {
+      "caliber": "6mm",
+      "weight": 2620,
+      "length": 720,
+      "firingMode": "Safe/Semi-Auto/Full-Auto",
+      "hopUp": true
+    },
+    "attributes": {
+      "platform": "AEG",
+      "fps_0_20": 380,
+      "gearbox": "V3 (7mm)",
+      "mag_capacity": 470,
+      "mag_type": "hicap",
+      "connector": "Small Tamiya",
+      "battery_recommendation": "NiMH 8.4V"
+    },
+    "createdAt": "2025-08-20T22:41:46.983Z",
+    "updatedAt": "2025-08-20T22:41:46.983Z"
+  },
+  {
+    "id": "f5f33547-2bc6-4e7f-9ef6-5a9d84aa8d3a",
+    "title": "Classic Army AEG MP5 CA5A4 Wide Forearm - Black",
+    "description": "MP5 AEG con upper metálico y palanca de carga funcional. Cañón externo metálico, alza delantera fija y trasera ajustable. Guardamanos y culata fija en polímero. Incluye magazine hi‑cap de 200 BBs.",
+    "price": 249,
+    "category": "replicas",
+    "status": "active",
+    "stock": 12,
+    "brand": "Classic Army",
+    "model": "MP017M",
+    "thumbnails": [
+      "https://www.arsenalsports.com/img/29179/produtos/1200/a2c4d72a2b1dfa7d8796254f430923ed.jpg"
+    ],
+    "tags": [
+      "aeg",
+      "mp5"
+    ],
+    "specs": {
+      "caliber": "6mm",
+      "weight": 2500,
+      "length": 780,
+      "firingMode": "Safe/Semi-Auto/Full-Auto",
+      "hopUp": true
+    },
+    "attributes": {
+      "platform": "AEG",
+      "fps_0_20": 380,
+      "gearbox": "V2",
+      "mag_capacity": 200,
+      "mag_type": "hicap",
+      "connector": "Large Tamiya",
+      "battery_recommendation": "7.4V–11.1V LiPo"
+    },
+    "createdAt": "2025-08-20T22:41:46.983Z",
+    "updatedAt": "2025-08-20T22:41:46.983Z"
+  },
+  {
+    "id": "d6600008-2241-46eb-b26c-a1a671383b27",
+    "title": "Classic Army AEG SCAR Heavy Long MK1‑HL con Gearbox 2.5 - Black",
+    "description": "SCAR‑H AEG con riel superior de 23\", receptor superior CNC con número de serie, miras metálicas ajustables y receptor inferior de polímero reforzado. Gearbox versión 2.5 con bujes de 9 mm, engranajes de acero y pistón de policarbonato. Rosca 14 mm CCW.",
+    "price": 279,
+    "category": "replicas",
+    "status": "active",
+    "stock": 10,
+    "brand": "Classic Army",
+    "model": "CA099M",
+    "thumbnails": [
+      "https://www.arsenalsports.com/img/24076/produtos/1200/a2ad7fc9e1d07412ad8b8c8265521e60.jpg"
+    ],
+    "tags": [
+      "aeg",
+      "scar-h"
+    ],
+    "specs": {
+      "caliber": "6mm",
+      "weight": 3500,
+      "length": 1005,
+      "firingMode": "Safe/Semi-Auto/Full-Auto",
+      "hopUp": true
+    },
+    "attributes": {
+      "platform": "AEG",
+      "fps_0_20": 350,
+      "gearbox": "V2.5 (9mm)",
+      "mag_capacity": 470,
+      "mag_type": "hicap",
+      "connector": "Small Tamiya",
+      "battery_recommendation": "NiMH 8.4V / LiPo 7.4V"
+    },
+    "createdAt": "2025-08-20T22:41:46.983Z",
+    "updatedAt": "2025-08-20T22:41:46.983Z"
+  },
+  {
+    "id": "ccfce9dd-134e-4760-979b-8d8d10987199",
+    "title": "Tokyo Marui AEG AUG Steyr Standard - Black",
+    "description": "Clásica AUG eléctrica de Tokyo Marui en configuración bullpup. Selector progresivo (semi/auto según recorrido del gatillo), miras abiertas ajustables y diseño con desmontaje tipo real para mantenimiento. Incluye cargador de 80 BBs.",
+    "price": 370,
+    "category": "replicas",
+    "status": "active",
+    "stock": 9,
+    "brand": "Tokyo Marui",
+    "model": "170484",
+    "thumbnails": [
+      "https://www.arsenalsports.com/img/28727/produtos/1200/56a0996ed6b703981ae18b35ee7e20b8.jpg"
+    ],
+    "tags": [
+      "aeg",
+      "aug"
+    ],
+    "specs": {
+      "caliber": "6mm",
+      "weight": 3400,
+      "length": 805,
+      "firingMode": "Safe/Semi-Auto/Full-Auto",
+      "hopUp": true
+    },
+    "attributes": {
+      "platform": "AEG",
+      "fps_0_20": 320,
+      "gearbox": "Propietaria TM",
+      "mag_capacity": 80,
+      "mag_type": "standard",
+      "connector": "Mini Tamiya",
+      "battery_recommendation": "NiMH 8.4V Mini S 1300mAh"
+    },
+    "createdAt": "2025-08-20T22:41:46.983Z",
+    "updatedAt": "2025-08-20T22:41:46.983Z"
+  },
+  {
+    "id": "28cadcc0-6479-4546-952d-a1c7631652d3",
+    "title": "APS AEG Phantom Extremis Mark VI PDW Blowback - Black",
+    "description": "Plataforma PDW pensada para juego competitivo: receptor estilo competición, guardamanos M‑LOK de 6\", culata PW de 3 posiciones y controles ambidiestros. Monta la Gearbox APS Silver Edge EBB con sistema de cambio rápido de resorte.",
+    "price": 229,
+    "category": "replicas",
+    "status": "active",
+    "stock": 18,
+    "brand": "APS",
+    "model": "PER706",
+    "thumbnails": [
+      "https://www.arsenalsports.com/img/14425/produtos/1200/f68f88ef299858695b1b4cc21cd2eacf.jpg"
+    ],
+    "tags": [
+      "aeg",
+      "pdw",
+      "mlok"
+    ],
+    "specs": {
+      "caliber": "6mm",
+      "weight": 2263,
+      "length": 620,
+      "firingMode": "Safe/Semi-Auto/Full-Auto",
+      "hopUp": true
+    },
+    "attributes": {
+      "platform": "AEG",
+      "fps_0_20": 340,
+      "gearbox": "APS Ver.2 SilverEdge EBB",
+      "mag_capacity": 190,
+      "mag_type": "hicap",
+      "connector": "Stick 7.4V",
+      "battery_recommendation": "LiPo 7.4V tipo stick"
+    },
+    "createdAt": "2025-08-20T22:41:46.983Z",
+    "updatedAt": "2025-08-20T22:41:46.983Z"
+  },
+  {
+    "id": "415a14b8-228b-4eb0-b8f1-6436f8ae0f0b",
+    "title": "H&K Umarex Licensed VFC GBBR UMP45 DX - Black",
+    "description": "Subfusil UMP45 con licencia oficial H&K. Receptor de polímero reforzado, culata lateral plegable, rieles Picatinny y mandos ambidiestros. Sistema GBBR con retroceso muy realista y cargador de 30 BBs.",
+    "price": 360,
+    "category": "replicas",
+    "status": "active",
+    "stock": 6,
+    "brand": "Umarex / H&K",
+    "model": "CF2-LUMP-BK81",
+    "thumbnails": [
+      "https://www.arsenalsports.com/img/13507/produtos/1200/1b53da4dbd23163eceda391f8d48010a.jpg"
+    ],
+    "tags": [
+      "gbbr",
+      "ump45"
+    ],
+    "specs": {
+      "caliber": "6mm",
+      "weight": 2500,
+      "length": 695,
+      "firingMode": "Safe/Semi-Auto/Full-Auto",
+      "hopUp": true
+    },
+    "attributes": {
+      "platform": "GBBR",
+      "fps_0_20": 330,
+      "gearbox": "N/A (gas blowback)",
+      "mag_capacity": 30,
+      "mag_type": "gbb",
+      "connector": "N/A",
+      "battery_recommendation": "N/A"
+    },
+    "createdAt": "2025-08-20T22:41:46.983Z",
+    "updatedAt": "2025-08-20T22:41:46.983Z"
+  },
+  {
+    "id": "8afba572-b3f0-446c-bf74-74229f20e1ec",
+    "title": "APS ASR117 BOAR Tactical AEG Silver Edge Keymod - Black",
+    "description": "Réplica AEG M4 con cuerpo metálico, gearbox APS Silver Edge (V2), guardamanos Keymod y blowback electrónico. Ideal para juego mixto CQB/campo. Excelente respuesta de gatillo con LiPo 11.1V.",
+    "price": 299,
+    "category": "replicas",
+    "status": "active",
+    "stock": 8,
+    "brand": "APS",
+    "model": "ASR117",
+    "thumbnails": [
+      "https://www.arsenalsports.com/img/10338/produtos/1200/2c2bf2a3d4a6a18a3e5018b0f0df5af8.jpg"
+    ],
+    "tags": [
+      "aeg",
+      "m4",
+      "metal-body"
+    ],
+    "specs": {
+      "caliber": "6mm",
+      "weight": 2800,
+      "length": 860,
+      "firingMode": "Safe/Semi-Auto/Full-Auto",
+      "hopUp": true
+    },
+    "attributes": {
+      "platform": "AEG",
+      "fps_0_20": 390,
+      "gearbox": "V2 Silver Edge",
+      "mag_capacity": 130,
+      "mag_type": "midcap",
+      "connector": "Deans",
+      "battery_recommendation": "LiPo 11.1V 1200mAh Deans"
+    },
+    "createdAt": "2025-08-20T22:41:46.983Z",
+    "updatedAt": "2025-08-20T22:41:46.983Z"
+  },
+  {
+    "id": "f270e004-e909-4800-8261-e8c358479056",
+    "title": "Magazine AK74 Mid‑Cap 130rds (AEG)",
+    "description": "Cargador mid‑cap para plataformas AK AEG. Construcción en polímero reforzado y resorte de alta tensión.",
+    "price": 12,
+    "category": "magazines",
+    "status": "active",
+    "stock": 60,
+    "thumbnails": [],
+    "specs": {
+      "capacity": 130,
+      "compatibility": [
+        "AK74 AEG",
+        "AK47/AKM AEG"
+      ],
+      "material": "Polímero"
+    },
+    "createdAt": "2025-08-20T22:41:46.983Z",
+    "updatedAt": "2025-08-20T22:41:46.983Z"
+  },
+  {
+    "id": "6e5fdde5-1bf3-4564-8e6b-6a6b3522785b",
+    "title": "Magazine AK74 Hi‑Cap 500rds (AEG)",
+    "description": "Cargador hi‑cap para AK AEG con rueda de alimentación manual y cuerpo de polímero resistente.",
+    "price": 15,
+    "category": "magazines",
+    "status": "active",
+    "stock": 40,
+    "thumbnails": [],
+    "specs": {
+      "capacity": 500,
+      "compatibility": [
+        "AK74 AEG",
+        "AK47/AKM AEG"
+      ],
+      "material": "Polímero"
+    },
+    "createdAt": "2025-08-20T22:41:46.983Z",
+    "updatedAt": "2025-08-20T22:41:46.983Z"
+  },
+  {
+    "id": "d9239a9a-f244-4cfc-9d7f-9665226e1a9d",
+    "title": "Magazine G36 Mid‑Cap 140rds (AEG)",
+    "description": "Cargador mid‑cap de 140 BBs para G36 AEG, polímero de alta resistencia.",
+    "price": 15,
+    "category": "magazines",
+    "status": "active",
+    "stock": 50,
+    "thumbnails": [],
+    "specs": {
+      "capacity": 140,
+      "compatibility": [
+        "G36 / G36C AEG"
+      ],
+      "material": "Polímero"
+    },
+    "createdAt": "2025-08-20T22:41:46.983Z",
+    "updatedAt": "2025-08-20T22:41:46.983Z"
+  },
+  {
+    "id": "c931a791-cb4a-4fa1-965e-4977f752a9f1",
+    "title": "Magazine G36 Hi‑Cap 470rds (AEG)",
+    "description": "Cargador hi‑cap de 470 BBs para G36 AEG con acople lateral clásico.",
+    "price": 18,
+    "category": "magazines",
+    "status": "active",
+    "stock": 40,
+    "thumbnails": [],
+    "specs": {
+      "capacity": 470,
+      "compatibility": [
+        "G36 / G36C AEG"
+      ],
+      "material": "Polímero"
+    },
+    "createdAt": "2025-08-20T22:41:46.983Z",
+    "updatedAt": "2025-08-20T22:41:46.983Z"
+  },
+  {
+    "id": "7e33b37f-0b37-4740-a206-3b2f8a3a2f9f",
+    "title": "Magazine MP5 Mid‑Cap 120rds (AEG)",
+    "description": "Cargador mid‑cap de perfil curvo para plataformas MP5 AEG.",
+    "price": 14,
+    "category": "magazines",
+    "status": "active",
+    "stock": 45,
+    "thumbnails": [],
+    "specs": {
+      "capacity": 120,
+      "compatibility": [
+        "MP5 AEG"
+      ],
+      "material": "Metal / Polímero"
+    },
+    "createdAt": "2025-08-20T22:41:46.983Z",
+    "updatedAt": "2025-08-20T22:41:46.983Z"
+  },
+  {
+    "id": "4ed044f4-a149-43af-80b4-11cf0f07e7ef",
+    "title": "Magazine MP5 Hi‑Cap 200rds (AEG)",
+    "description": "Cargador hi‑cap de 200 BBs para MP5 AEG, rueda inferior de alimentación.",
+    "price": 16,
+    "category": "magazines",
+    "status": "active",
+    "stock": 40,
+    "thumbnails": [],
+    "specs": {
+      "capacity": 200,
+      "compatibility": [
+        "MP5 AEG"
+      ],
+      "material": "Metal / Polímero"
+    },
+    "createdAt": "2025-08-20T22:41:46.983Z",
+    "updatedAt": "2025-08-20T22:41:46.983Z"
+  },
+  {
+    "id": "a2c72861-605f-4a49-ae36-247cc577766a",
+    "title": "Magazine SCAR‑H Mid‑Cap 120rds (AEG)",
+    "description": "Cargador mid‑cap 7.62‑style para plataformas SCAR‑H AEG.",
+    "price": 18,
+    "category": "magazines",
+    "status": "active",
+    "stock": 30,
+    "thumbnails": [],
+    "specs": {
+      "capacity": 120,
+      "compatibility": [
+        "SCAR‑H AEG"
+      ],
+      "material": "Polímero"
+    },
+    "createdAt": "2025-08-20T22:41:46.983Z",
+    "updatedAt": "2025-08-20T22:41:46.983Z"
+  },
+  {
+    "id": "cdb88d4f-9c1a-4d28-b250-b1735c71d4b8",
+    "title": "Magazine SCAR‑H Hi‑Cap 470rds (AEG)",
+    "description": "Cargador hi‑cap de alta capacidad para SCAR‑H AEG.",
+    "price": 22,
+    "category": "magazines",
+    "status": "active",
+    "stock": 25,
+    "thumbnails": [],
+    "specs": {
+      "capacity": 470,
+      "compatibility": [
+        "SCAR‑H AEG"
+      ],
+      "material": "Polímero"
+    },
+    "createdAt": "2025-08-20T22:41:46.983Z",
+    "updatedAt": "2025-08-20T22:41:46.983Z"
+  },
+  {
+    "id": "fc2d7fae-beab-40d1-9614-5e7960cc9b64",
+    "title": "Magazine AUG Mid‑Cap 110rds (AEG)",
+    "description": "Cargador mid‑cap translúcido para plataformas AUG AEG.",
+    "price": 16,
+    "category": "magazines",
+    "status": "active",
+    "stock": 35,
+    "thumbnails": [],
+    "specs": {
+      "capacity": 110,
+      "compatibility": [
+        "AUG AEG"
+      ],
+      "material": "Polímero"
+    },
+    "createdAt": "2025-08-20T22:41:46.983Z",
+    "updatedAt": "2025-08-20T22:41:46.983Z"
+  },
+  {
+    "id": "a232bdc1-47ca-42ed-a90d-6860c295b44d",
+    "title": "Magazine AUG Hi‑Cap 330rds (AEG)",
+    "description": "Cargador hi‑cap para AUG AEG con cuerpo de polímero resistente.",
+    "price": 19,
+    "category": "magazines",
+    "status": "active",
+    "stock": 30,
+    "thumbnails": [],
+    "specs": {
+      "capacity": 330,
+      "compatibility": [
+        "AUG AEG"
+      ],
+      "material": "Polímero"
+    },
+    "createdAt": "2025-08-20T22:41:46.983Z",
+    "updatedAt": "2025-08-20T22:41:46.983Z"
+  },
+  {
+    "id": "f774870d-016d-43eb-a693-f9cad2d043a7",
+    "title": "APS U‑Mag M4 Mid‑Cap 130rds (AEG)",
+    "description": "Cargador mid‑cap tipo U‑Mag para plataformas M4/M16 AEG. Polímero POM de alta resistencia y resorte tratado.",
+    "price": 10,
+    "category": "magazines",
+    "status": "active",
+    "stock": 80,
+    "thumbnails": [],
+    "specs": {
+      "capacity": 130,
+      "compatibility": [
+        "M4/M16/AR‑15 AEG"
+      ],
+      "material": "Polímero POM"
+    },
+    "createdAt": "2025-08-20T22:41:46.983Z",
+    "updatedAt": "2025-08-20T22:41:46.983Z"
+  },
+  {
+    "id": "31d350d8-52aa-49d6-b38b-61cf1e7b16c1",
+    "title": "Magazine M4 Hi‑Cap 300rds (AEG)",
+    "description": "Cargador hi‑cap para plataformas M4/M16 AEG con rueda de alimentación.",
+    "price": 12,
+    "category": "magazines",
+    "status": "active",
+    "stock": 60,
+    "thumbnails": [],
+    "specs": {
+      "capacity": 300,
+      "compatibility": [
+        "M4/M16/AR‑15 AEG"
+      ],
+      "material": "Metal / Polímero"
+    },
+    "createdAt": "2025-08-20T22:41:46.983Z",
+    "updatedAt": "2025-08-20T22:41:46.983Z"
+  },
+  {
+    "id": "ba95d626-420f-4fbc-b758-dc1224ef355a",
+    "title": "Magazine UMP45 Mid‑Cap 110rds (GBB/AEG estilo real)",
+    "description": "Cargador tipo mid para UMP45 (compatibilidad según plataforma). Construcción de polímero reforzado.",
+    "price": 28,
+    "category": "magazines",
+    "status": "active",
+    "stock": 20,
+    "thumbnails": [],
+    "specs": {
+      "capacity": 110,
+      "compatibility": [
+        "UMP45 (verificar AEG/GBB)"
+      ],
+      "material": "Polímero"
+    },
+    "createdAt": "2025-08-20T22:41:46.983Z",
+    "updatedAt": "2025-08-20T22:41:46.983Z"
+  },
+  {
+    "id": "2d0eebb4-289a-454b-a407-da855dab987f",
+    "title": "Magazine UMP45 Hi‑Cap 420rds (AEG)",
+    "description": "Cargador hi‑cap de 420 BBs para UMP‑style AEG. (Para GBBR usar cargadores específicos de gas).",
+    "price": 24,
+    "category": "magazines",
+    "status": "active",
+    "stock": 22,
+    "thumbnails": [],
+    "specs": {
+      "capacity": 420,
+      "compatibility": [
+        "UMP AEG"
+      ],
+      "material": "Polímero"
+    },
+    "createdAt": "2025-08-20T22:41:46.983Z",
+    "updatedAt": "2025-08-20T22:41:46.983Z"
+  },
+  {
+    "id": "e8f488a5-06de-429d-882d-69b69407464e",
+    "title": "APS U‑Mag M4 Mid‑Cap 130rds (AEG) — Black Reaper",
+    "description": "Cargador mid‑cap U‑Mag de 130 BBs para M4/M16 AEG. Polímero POM de alta resistencia, resorte japonés.",
+    "price": 10,
+    "category": "magazines",
+    "status": "active",
+    "stock": 80,
+    "thumbnails": [],
+    "specs": {
+      "capacity": 130,
+      "compatibility": [
+        "M4/M16/AR‑15 AEG"
+      ],
+      "material": "Polímero POM"
+    },
+    "createdAt": "2025-08-20T22:41:46.983Z",
+    "updatedAt": "2025-08-20T22:41:46.983Z"
+  },
+  {
+    "id": "88f05e92-7c18-4e9f-85e8-ad31e927c838",
+    "title": "Magazine M4 Hi‑Cap 300rds (AEG) — Black",
+    "description": "Cargador hi‑cap 300 BBs para plataformas M4/M16 AEG.",
+    "price": 12,
+    "category": "magazines",
+    "status": "active",
+    "stock": 60,
+    "thumbnails": [],
+    "specs": {
+      "capacity": 300,
+      "compatibility": [
+        "M4/M16/AR‑15 AEG"
+      ],
+      "material": "Metal / Polímero"
+    },
+    "createdAt": "2025-08-20T22:41:46.983Z",
+    "updatedAt": "2025-08-20T22:41:46.983Z"
+  },
+  {
+    "id": "b52eb5c4-b234-4d54-81c6-a93ea4fb6121",
+    "title": "BLS Precision BBs 0.20g — Bolsa 1 kg",
+    "description": "BBs grado competencia, esféricas y sin imperfecciones. Diámetro 5.94–5.96 mm, bolsa resellable para un mejor almacenamiento. Excelente consistencia para todo rango de FPS.",
+    "price": 7,
+    "category": "bbs",
+    "status": "active",
+    "stock": 120,
+    "brand": "BLS",
+    "thumbnails": [
+      "https://www.arsenalsports.com/img/22220/produtos/1200/0f6ccecee5f45c8b9332ab97e6bf3756.jpg"
+    ],
+    "specs": {
+      "weight": 0.2,
+      "diameter": 5.95,
+      "quantity": 5000,
+      "material": "Polímero (Precision Grade)"
+    },
+    "createdAt": "2025-08-20T22:41:46.983Z",
+    "updatedAt": "2025-08-20T22:41:46.983Z"
+  },
+  {
+    "id": "14cb1c00-01f6-497b-9175-0c9226b85c69",
+    "title": "BLS Precision BBs 0.28g — Bolsa 1 kg",
+    "description": "BBs 0.28 g Precision Grade, diámetro 5.95 mm ± 0.01 mm. Superficie pulida para máxima precisión y consistencia.",
+    "price": 9,
+    "category": "bbs",
+    "status": "active",
+    "stock": 100,
+    "brand": "BLS",
+    "thumbnails": [
+      "https://www.arsenalsports.com/img/13972/produtos/1200/428ec1895bae2d708d672a56d395bdca.jpg"
+    ],
+    "specs": {
+      "weight": 0.28,
+      "diameter": 5.95,
+      "quantity": 3570,
+      "material": "Polímero (Precision Grade)"
+    },
+    "createdAt": "2025-08-20T22:41:46.983Z",
+    "updatedAt": "2025-08-20T22:41:46.983Z"
+  },
+  {
+    "id": "fcdbe73d-e5ac-47ad-9c73-e165f9e1fa8c",
+    "title": "BLS Precision BBs 0.40g — Bolsa 1 kg (Ivory)",
+    "description": "BBs 0.40 g con alta uniformidad y resistencia a astillado. Bolsa resellable y acabado premium para tiros de larga distancia.",
+    "price": 23,
+    "category": "bbs",
+    "status": "active",
+    "stock": 80,
+    "brand": "BLS",
+    "thumbnails": [
+      "https://www.arsenalsports.com/img/21923/produtos/1200/e8aec42462cfb2f8bf5133296c3e466c.jpg"
+    ],
+    "specs": {
+      "weight": 0.4,
+      "diameter": 5.95,
+      "quantity": 2500,
+      "material": "Polímero (Precision Grade)"
+    },
+    "createdAt": "2025-08-20T22:41:46.983Z",
+    "updatedAt": "2025-08-20T22:41:46.983Z"
+  },
+  {
+    "id": "0c2f2736-c2df-4607-8d49-fb4a9cd0161b",
+    "title": "BLS BBs 0.20g — Bolsa 25 kg (Precision White)",
+    "description": "BBs 0.20 g grado precisión para uso intensivo. Diámetro 5.94–5.96 mm y consistencia esférica. Presentación industrial 25 kg.",
+    "price": 178,
+    "category": "bbs",
+    "status": "active",
+    "stock": 8,
+    "brand": "BLS",
+    "thumbnails": [
+      "https://www.arsenalsports.com/img/20807/produtos/1200/ada91e7f36b4d96b40c9bf3e07dbbe33.jpg"
+    ],
+    "specs": {
+      "weight": 0.2,
+      "diameter": 5.95,
+      "quantity": 125000,
+      "material": "Polímero (Precision Grade)"
+    },
+    "createdAt": "2025-08-20T22:41:46.983Z",
+    "updatedAt": "2025-08-20T22:41:46.983Z"
+  },
+  {
+    "id": "64b5e404-fb07-4f84-af59-4bfb9a2c68f4",
+    "title": "BLS BBs 0.28g — Bolsa 25 kg (Precision White)",
+    "description": "BBs 0.28 g grado precisión. Diámetro 5.94–5.96 mm, esfericidad consistente y empaque 25 kg para equipos/tiendas.",
+    "price": 210,
+    "category": "bbs",
+    "status": "active",
+    "stock": 6,
+    "brand": "BLS",
+    "thumbnails": [
+      "https://www.arsenalsports.com/img/20807/produtos/1200/ada91e7f36b4d96b40c9bf3e07dbbe33.jpg"
+    ],
+    "specs": {
+      "weight": 0.28,
+      "diameter": 5.95,
+      "quantity": 89285,
+      "material": "Polímero (Precision Grade)"
+    },
+    "createdAt": "2025-08-20T22:41:46.983Z",
+    "updatedAt": "2025-08-20T22:41:46.983Z"
+  },
+  {
+    "id": "9fa30635-66f3-4470-9098-10fa9813db56",
+    "title": "BLS BBs 0.40g — Bolsa 25 kg (Precision White)",
+    "description": "BBs 0.40 g de alta uniformidad para tiradores DMR/Sniper. Presentación 25 kg. (Foto ilustrativa de la línea 25 kg).",
+    "price": 360,
+    "category": "bbs",
+    "status": "active",
+    "stock": 4,
+    "brand": "BLS",
+    "thumbnails": [
+      "https://www.arsenalsports.com/img/20807/produtos/1200/ada91e7f36b4d96b40c9bf3e07dbbe33.jpg"
+    ],
+    "specs": {
+      "weight": 0.4,
+      "diameter": 5.95,
+      "quantity": 62500,
+      "material": "Polímero (Precision Grade)"
+    },
+    "createdAt": "2025-08-20T22:41:46.983Z",
+    "updatedAt": "2025-08-20T22:41:46.983Z"
+  },
+  {
+    "id": "b920f16f-981f-4614-8b6d-527365c5b824",
+    "title": "Nano‑Tech LiPo 7.4V 1200mAh (2S) 15–25C — Mini Tamiya",
+    "description": "Batería LiPo 7.4 V 1200 mAh (2S1P) con descarga 15C (25C burst). Tecnología nano‑core para menor impedancia y mejor entrega de corriente. Conector Mini‑Tamiya, conector de balance JST‑XH.",
+    "price": 14,
+    "category": "batteries",
+    "status": "active",
+    "stock": 30,
+    "thumbnails": [
+      "https://www.arsenalsports.com/img/25934/produtos/1200/0d1041fb5d1f85d1d853ffdc2be604d1.jpg"
+    ],
+    "specs": {
+      "voltage": 7.4,
+      "capacity": 1200,
+      "chemistry": "LiPo Nano‑Tech",
+      "connector": "Mini Tamiya"
+    },
+    "createdAt": "2025-08-20T22:41:46.983Z",
+    "updatedAt": "2025-08-20T22:41:46.983Z"
+  },
+  {
+    "id": "6b913e26-db5b-4ccb-8ae4-bc2ad0179ce6",
+    "title": "Nano‑Tech LiPo 11.1V 1200mAh (3S) 15–25C — Mini Tamiya",
+    "description": "Batería LiPo 11.1 V 1200 mAh (3S1P) con descarga 15C (25C burst). Baja caída de tensión y mejor control térmico. Conector Mini‑Tamiya, balance JST‑XH.",
+    "price": 17,
+    "category": "batteries",
+    "status": "active",
+    "stock": 28,
+    "thumbnails": [
+      "https://www.arsenalsports.com/img/25932/produtos/1200/7d989791403832c656d9acda36f9ce96.jpg"
+    ],
+    "specs": {
+      "voltage": 11.1,
+      "capacity": 1200,
+      "chemistry": "LiPo Nano‑Tech",
+      "connector": "Mini Tamiya"
+    },
+    "createdAt": "2025-08-20T22:41:46.983Z",
+    "updatedAt": "2025-08-20T22:41:46.983Z"
+  }
+]

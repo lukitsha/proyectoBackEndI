@@ -1,0 +1,32 @@
+{
+    "name": "airsoft-ecommerce-api",
+    "version": "1.0.0",
+    "description": "API REST para e-commerce de Airsoft - Entrega #1 CoderHouse",
+    "main": "index.js",
+    "scripts": {
+        "start": "node index.js",
+        "dev": "nodemon index.js",
+        "seed": "node scripts/seed.js",
+        "reseed": "node scripts/seed.js --force"
+    },
+    "keywords": [
+        "airsoft",
+        "ecommerce",
+        "api",
+        "node",
+        "express"
+    ],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "dotenv": "^16.3.1",
+        "express": "^4.18.2",
+        "morgan": "^1.10.1"
+    },
+    "devDependencies": {
+        "nodemon": "^3.1.10"
+    },
+    "engines": {
+        "node": ">=18.0.0"
+    }
+}

@@ -1,0 +1,460 @@
+{
+    "info": {
+      "name": "Airsoft E-commerce API",
+      "description": "Colección completa para testing de API REST de e-commerce Airsoft",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+      {
+        "key": "baseUrl",
+        "value": "http://localhost:8080",
+        "type": "string"
+      },
+      {
+        "key": "cartId",
+        "value": "",
+        "type": "string"
+      },
+      {
+        "key": "productId",
+        "value": "",
+        "type": "string"
+      }
+    ],
+    "item": [
+      {
+        "name": "Root",
+        "request": {
+          "method": "GET",
+          "header": [],
+          "url": {
+            "raw": "{{baseUrl}}/",
+            "host": ["{{baseUrl}}"],
+            "path": [""]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Products",
+        "item": [
+          {
+            "name": "Get All Products",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "{{baseUrl}}/api/products",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "products"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Get All Products with Pagination",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "{{baseUrl}}/api/products?limit=5&page=1&sort=price&order=asc",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "products"],
+                "query": [
+                  {"key": "limit", "value": "5"},
+                  {"key": "page", "value": "1"},
+                  {"key": "sort", "value": "price"},
+                  {"key": "order", "value": "asc"}
+                ]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Filter Products by Category",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "{{baseUrl}}/api/products?category=replicas",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "products"],
+                "query": [
+                  {"key": "category", "value": "replicas"}
+                ]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Filter Products by Price Range",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "{{baseUrl}}/api/products?minPrice=1000&maxPrice=10000",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "products"],
+                "query": [
+                  {"key": "minPrice", "value": "1000"},
+                  {"key": "maxPrice", "value": "10000"}
+                ]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Search Products",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "{{baseUrl}}/api/products?query=M4",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "products"],
+                "query": [
+                  {"key": "query", "value": "M4"}
+                ]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Get Product by ID",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "{{baseUrl}}/api/products/{{productId}}",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "products", "{{productId}}"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Create Product - Replica",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "if (pm.response.code === 201) {",
+                    "    const response = pm.response.json();",
+                    "    pm.collectionVariables.set('productId', response.data.id);",
+                    "}"
+                  ]
+                }
+              }
+            ],
+            "request": {
+              "method": "POST",
+              "header": [
+                {"key": "Content-Type", "value": "application/json"}
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"title\": \"M4A1 Carbine Elite\",\n  \"description\": \"Réplica M4A1 con sistema AEG de alta calidad, ideal para partidas CQB y campo abierto\",\n  \"price\": 48000,\n  \"category\": \"replicas\",\n  \"stock\": 10,\n  \"specs\": {\n    \"caliber\": \"6mm\",\n    \"weight\": 2900,\n    \"length\": 850,\n    \"firingMode\": \"Semi/Full Auto\",\n    \"hopUp\": true\n  }\n}"
+              },
+              "url": {
+                "raw": "{{baseUrl}}/api/products",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "products"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Create Product - Magazine",
+            "request": {
+              "method": "POST",
+              "header": [
+                {"key": "Content-Type", "value": "application/json"}
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"title\": \"M4 Mid-Cap Magazine 140rds\",\n  \"description\": \"Cargador mid-cap de 140 balines para réplicas M4/M16 con construcción en polímero\",\n  \"price\": 3200,\n  \"category\": \"magazines\",\n  \"stock\": 35,\n  \"specs\": {\n    \"capacity\": 140,\n    \"compatibility\": [\"M4\", \"M16\", \"AR15\"],\n    \"material\": \"Polímero reforzado\"\n  }\n}"
+              },
+              "url": {
+                "raw": "{{baseUrl}}/api/products",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "products"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Create Product - BBs",
+            "request": {
+              "method": "POST",
+              "header": [
+                {"key": "Content-Type", "value": "application/json"}
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"title\": \"BB 0.30g Precision - 2500 unidades\",\n  \"description\": \"Balines de precisión 0.30g para tiro de larga distancia con superficie perfectamente pulida\",\n  \"price\": 2100,\n  \"category\": \"bbs\",\n  \"stock\": 180,\n  \"specs\": {\n    \"weight\": 0.30,\n    \"diameter\": 5.95,\n    \"quantity\": 2500,\n    \"material\": \"Polímero biodegradable\"\n  }\n}"
+              },
+              "url": {
+                "raw": "{{baseUrl}}/api/products",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "products"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Create Product - Battery",
+            "request": {
+              "method": "POST",
+              "header": [
+                {"key": "Content-Type", "value": "application/json"}
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"title\": \"Batería LiPo 7.4V 2000mAh 20C\",\n  \"description\": \"Batería de litio polímero 7.4V con conector mini Tamiya, ideal para réplicas AEG estándar\",\n  \"price\": 6800,\n  \"category\": \"batteries\",\n  \"stock\": 25,\n  \"specs\": {\n    \"voltage\": 7.4,\n    \"capacity\": 2000,\n    \"chemistry\": \"LiPo\",\n    \"connector\": \"Mini Tamiya\"\n  }\n}"
+              },
+              "url": {
+                "raw": "{{baseUrl}}/api/products",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "products"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Update Product",
+            "request": {
+              "method": "PUT",
+              "header": [
+                {"key": "Content-Type", "value": "application/json"}
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"title\": \"M4A1 Carbine Elite - Updated\",\n  \"price\": 47000,\n  \"stock\": 8\n}"
+              },
+              "url": {
+                "raw": "{{baseUrl}}/api/products/{{productId}}",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "products", "{{productId}}"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Delete Product",
+            "request": {
+              "method": "DELETE",
+              "header": [],
+              "url": {
+                "raw": "{{baseUrl}}/api/products/{{productId}}",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "products", "{{productId}}"]
+              }
+            },
+            "response": []
+          }
+        ]
+      },
+      {
+        "name": "Carts",
+        "item": [
+          {
+            "name": "Create Cart",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "if (pm.response.code === 201) {",
+                    "    const response = pm.response.json();",
+                    "    pm.collectionVariables.set('cartId', response.data.id);",
+                    "}"
+                  ]
+                }
+              }
+            ],
+            "request": {
+              "method": "POST",
+              "header": [
+                {"key": "Content-Type", "value": "application/json"}
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/api/carts",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "carts"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Get Cart by ID",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "{{baseUrl}}/api/carts/{{cartId}}",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "carts", "{{cartId}}"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Get Cart Summary",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "{{baseUrl}}/api/carts/{{cartId}}/summary",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "carts", "{{cartId}}", "summary"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Add Product to Cart (default quantity)",
+            "request": {
+              "method": "POST",
+              "header": [
+                {"key": "Content-Type", "value": "application/json"}
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/api/carts/{{cartId}}/product/{{productId}}",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "carts", "{{cartId}}", "product", "{{productId}}"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Add Product to Cart (custom quantity)",
+            "request": {
+              "method": "POST",
+              "header": [
+                {"key": "Content-Type", "value": "application/json"}
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"quantity\": 3\n}"
+              },
+              "url": {
+                "raw": "{{baseUrl}}/api/carts/{{cartId}}/product/{{productId}}",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "carts", "{{cartId}}", "product", "{{productId}}"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Update Product Quantity in Cart",
+            "request": {
+              "method": "PUT",
+              "header": [
+                {"key": "Content-Type", "value": "application/json"}
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"quantity\": 5\n}"
+              },
+              "url": {
+                "raw": "{{baseUrl}}/api/carts/{{cartId}}/product/{{productId}}",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "carts", "{{cartId}}", "product", "{{productId}}"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Remove Product from Cart",
+            "request": {
+              "method": "DELETE",
+              "header": [],
+              "url": {
+                "raw": "{{baseUrl}}/api/carts/{{cartId}}/product/{{productId}}",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "carts", "{{cartId}}", "product", "{{productId}}"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Delete Cart",
+            "request": {
+              "method": "DELETE",
+              "header": [],
+              "url": {
+                "raw": "{{baseUrl}}/api/carts/{{cartId}}",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "carts", "{{cartId}}"]
+              }
+            },
+            "response": []
+          }
+        ]
+      },
+      {
+        "name": "Error Cases",
+        "item": [
+          {
+            "name": "404 - Invalid Product ID",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "{{baseUrl}}/api/products/invalid-id-123",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "products", "invalid-id-123"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "400 - Invalid Product Data",
+            "request": {
+              "method": "POST",
+              "header": [
+                {"key": "Content-Type", "value": "application/json"}
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"title\": \"A\",\n  \"price\": -100,\n  \"category\": \"invalid\"\n}"
+              },
+              "url": {
+                "raw": "{{baseUrl}}/api/products",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "products"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "404 - Invalid Cart ID",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "{{baseUrl}}/api/carts/invalid-cart-id",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "carts", "invalid-cart-id"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "404 - Endpoint Not Found",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "{{baseUrl}}/api/invalid-endpoint",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "invalid-endpoint"]
+              }
+            },
+            "response": []
+          }
+        ]
+      }
+    ]
+  }
