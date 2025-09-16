@@ -24,9 +24,13 @@ app.set('io', io);
 // Importar el *service instanciado* (NO se instancia aquí)
 const productsService = require('./src/services/products.service');
 
+// Contador de usuarios para mostrar en consola
+let connectedUsers = 0;
+
 // 4) Eventos base (conexión / desconexión)
 io.on('connection', (socket) => {
-  console.log('🟢 Cliente conectado:', socket.id);
+  connectedUsers++;
+  console.log(`🟢 Cliente conectado: ${socket.id} (Total: ${connectedUsers})`);
 
   // Helper para enviar la lista a todos
   const broadcastProducts = async () => {
@@ -85,24 +89,68 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', () => {
-    console.log('🔴 Cliente desconectado:', socket.id);
+    connectedUsers--;
+    console.log(`🔴 Cliente desconectado: ${socket.id} (Total: ${connectedUsers})`);
     io.emit('users:count', io.engine.clientsCount || 0);
   });
 });
 
 // 5) Levantar el server
 server.listen(PORT, async () => {
-  console.log(`Servidor corriendo en puerto ${PORT}`);
-  console.log(`API disponible en http://localhost:${PORT}/api`);
+  // Limpiar consola para mejor presentación
+  console.clear();
+  
+  console.log('\n' + '='.repeat(70));
+  console.log('🎯 AIRSOFT E-COMMERCE API - SERVIDOR INICIADO');
+  console.log('='.repeat(70));
+  
+  console.log(`\n📍 Puerto: ${PORT}`);
+  console.log(`🌐 URL Base: http://localhost:${PORT}`);
+  
+  console.log('\n' + '-'.repeat(70));
+  console.log('📄 VISTAS DISPONIBLES:');
+  console.log('-'.repeat(70));
+  console.log(`  🏠 Home (Catálogo):        http://localhost:${PORT}/`);
+  console.log(`  ⚡ Tiempo Real (WebSocket): http://localhost:${PORT}/realtimeproducts`);
+  
+  console.log('\n' + '-'.repeat(70));
+  console.log('🔌 ENDPOINTS API:');
+  console.log('-'.repeat(70));
+  console.log(`  📦 Productos:              http://localhost:${PORT}/api/products`);
+  console.log(`  🛒 Carritos:               http://localhost:${PORT}/api/carts`);
+  console.log(`  📊 API Info:               http://localhost:${PORT}/api`);
+  
+  console.log('\n' + '-'.repeat(70));
+  console.log('⚙️  COMANDOS ÚTILES:');
+  console.log('-'.repeat(70));
+  console.log('  npm run seed   → Inicializar datos de ejemplo');
+  console.log('  npm run reseed → Reinicializar datos (sobrescribir)');
+  console.log('  rs + Enter     → Reiniciar servidor (nodemon)');
+  console.log('  Ctrl + C       → Detener servidor');
+  
+  console.log('\n' + '='.repeat(70));
 
   if (INIT_ON_START) {
+    console.log('\n🌱 Inicializando datos de ejemplo...');
     try {
       await initializeIfEmpty();
-      console.log('Inicialización de datos ejecutada (por INIT_DATA_ON_STARTUP=true).');
+      console.log('✅ Datos inicializados correctamente.');
     } catch (err) {
-      console.error('Fallo al inicializar datos:', err?.message || err);
+      console.error('❌ Error al inicializar datos:', err?.message || err);
     }
   } else {
-    console.log('Inicialización de datos omitida. (Ejecutá `npm run seed` o `npm run reseed` cuando quieras).');
+    console.log('\n💡 Tip: Ejecutá `npm run seed` para cargar datos de ejemplo.');
   }
+  
+  console.log('\n✅ Servidor listo y escuchando...\n');
+});
+
+// Manejo de errores del servidor
+server.on('error', (error) => {
+  console.error('\n❌ Error del servidor:', error.message);
+  if (error.code === 'EADDRINUSE') {
+    console.error(`   El puerto ${PORT} ya está en uso.`);
+    console.error('   Solución: lsof -i :${PORT} && kill -9 <PID>\n');
+  }
+  process.exit(1);
 });
