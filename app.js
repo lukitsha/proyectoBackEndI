@@ -9,24 +9,47 @@ const cartsRouter = require('./src/routes/carts.routes');
 
 const app = express();
 
-/*  Middlewares base */
+/* ========= Middlewares base ========= */
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('combined'));
 
-// Archivos estáticos (JS cliente, CSS, imágenes)
+/* ========= Archivos estáticos ========= */
 app.use(express.static(path.join(__dirname, 'public')));
 
-/* Handlebars */
+/* ========= Handlebars ========= */
+const viewsDir = path.join(__dirname, 'src', 'views');
+
 app.engine('handlebars', exphbs.engine({
   defaultLayout: 'main',
-  layoutsDir: path.join(__dirname, 'src', 'views', 'layouts'),
+  layoutsDir: path.join(viewsDir, 'layouts'),
+  partialsDir: path.join(viewsDir, 'partials'),
+  helpers: {
+    eq: (a, b) => a === b,
+    lte: (a, b) => Number(a) <= Number(b),
+    typeof: (v) => typeof v,
+  },
 }));
 app.set('view engine', 'handlebars');
-app.set('views', path.join(__dirname, 'src', 'views'));
+app.set('views', viewsDir);
 
-/* Bienvenida API */
-app.get('/api', (req, res) => {
+/* ========= Vistas (Home / Tiempo Real) =========
+   Montaje "a prueba de fallos": si falta el router o tiene un error,
+   no se cae el server y te avisa en consola.
+*/
+(() => {
+  try {
+    const viewsRouter = require('./src/routes/views.router');
+    app.use('/', viewsRouter);
+    console.log('✓ Views router montado en "/"');
+  } catch (err) {
+    console.warn('⚠ No se pudo montar views.router:', err.message);
+    console.warn('   > La ruta "/" mostrará 404 JSON hasta que exista y compile.');
+  }
+})();
+
+/* ========= Bienvenida API ========= */
+app.get('/api', (_req, res) => {
   res.json({
     name: 'Airsoft E-commerce API',
     version: '1.0.0',
@@ -43,43 +66,31 @@ app.get('/api', (req, res) => {
       { method: 'POST', path: '/api/carts/:cid/product/:pid', description: 'Agregar producto al carrito' },
       { method: 'PUT', path: '/api/carts/:cid/product/:pid', description: 'Actualizar cantidad' },
       { method: 'DELETE', path: '/api/carts/:cid/product/:pid', description: 'Eliminar producto del carrito' },
-      { method: 'GET', path: '/api/carts/:cid/summary', description: 'Resumen (totales)' }
-    ]
+      { method: 'GET', path: '/api/carts/:cid/summary', description: 'Resumen (totales)' },
+    ],
   });
 });
 
-/* Routers de negocio */
+/* ========= Routers de negocio ========= */
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
 
-/* =========================
-   (Opcional) Views Router
-   - Lo dejamos listo para el siguiente paso.
-   - Si el archivo aún no existe, no rompe la app.
-========================= */
-try {
-  const viewsRouter = require('./src/routes/views.router');
-  app.use('/', viewsRouter);
-} catch (e) {
-  // Cuando crees src/routes/views.router.js, esto se activará automáticamente.
-}
-
-/* 404 para endpoints no encontrados */
+/* ========= 404 ========= */
 app.use((req, res) => {
   res.status(404).json({
     error: 'Endpoint no encontrado',
     message: `La ruta ${req.method} ${req.originalUrl} no existe`,
-    availableEndpoints: ['/api/products', '/api/carts', '/api']
+    availableEndpoints: ['/api/products', '/api/carts', '/api'],
   });
 });
 
-/* Manejo de errores */
+/* ========= Manejo de errores ========= */
 // eslint-disable-next-line no-unused-vars
-app.use((err, req, res, next) => {
+app.use((err, _req, res, _next) => {
   const status = err.statusCode || 500;
   res.status(status).json({
     error: err.name || 'Error',
-    message: err.message || 'Error interno del servidor'
+    message: err.message || 'Error interno del servidor',
   });
 });
 

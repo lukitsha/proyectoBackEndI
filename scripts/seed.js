@@ -273,7 +273,7 @@ const SEED_PRODUCTS = [
     stock: 8,
     brand: 'APS',
     model: 'ASR117',
-    thumbnails: img('https://www.arsenalsports.com/img/10338/produtos/1200/2c2bf2a3d4a6a18a3e5018b0f0df5af8.jpg'),
+    thumbnails: img('https://www.arsenalsports.com/img/10338/produtos/1200/dc8a5399120e2702a5d16e0fa59666ca.jpg'),
     tags: ['aeg', 'm4', 'metal-body'],
     specs: {
       caliber: '6mm',

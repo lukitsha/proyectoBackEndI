@@ -1,5 +1,20 @@
 const { Router } = require('express');
-const ProductsService = require('../services/products.service');
+
+// Service flexible
+const svcMod = require('../services/products.service');
+const svcInstance =
+  (typeof svcMod === 'function') ? new svcMod()
+  : (svcMod && typeof svcMod.default === 'function') ? new svcMod.default()
+  : svcMod;
+
+const getAllProducts =
+  (svcInstance && typeof svcInstance.getAllProducts === 'function') ? svcInstance.getAllProducts.bind(svcInstance)
+  : (svcInstance && typeof svcInstance.getAll === 'function') ? svcInstance.getAll.bind(svcInstance)
+  : null;
+
+if (!getAllProducts) {
+  throw new Error('[views.router] No encontré getAllProducts() ni getAll() en ProductsService');
+}
 
 const router = Router();
 
@@ -10,30 +25,64 @@ const CATEGORY_META = {
   batteries: { key: 'batteries', title: 'Baterías',   badge: 'batteries' },
 };
 
+const VALID_KEYS = Object.keys(CATEGORY_META);
+
 router.get('/', async (req, res, next) => {
   try {
-    const svc = new ProductsService();
-    const products = await svc.getAll();
+    const selected = (req.query.category || '').toLowerCase().trim();
+    const activeKey = VALID_KEYS.includes(selected) ? selected : 'all';
 
-    // agrupo por categoría que usamos en back: replicas | magazines | bbs | batteries
-    const productsByCategory = Object.values(CATEGORY_META).map(meta => ({
-      ...meta,
-      items: (products || []).filter(p => (p.category || '').toLowerCase() === meta.key)
+    const products = await getAllProducts({});
+    const normalized = (products || []).map(p => ({
+      ...p,
+      _id: p._id || p.id,
+      category: (p.category || '').toLowerCase(),
     }));
 
+    // Conteos por categoría para mostrar en la botonera
+    const counts = VALID_KEYS.reduce((acc, k) => {
+      acc[k] = normalized.filter(p => p.category === k).length;
+      return acc;
+    }, {});
+    const total = normalized.length;
+
+    // Armo las secciones
+    let productsByCategory = Object.values(CATEGORY_META).map(meta => ({
+      ...meta,
+      items: normalized.filter(p => p.category === meta.key),
+    }));
+
+    // Si hay filtro, dejo solo esa sección
+    if (activeKey !== 'all') {
+      productsByCategory = productsByCategory.filter(s => s.key === activeKey);
+    }
+
     res.render('home', {
-      pageTitle: 'Home',
+      pageTitle: activeKey === 'all'
+        ? 'Home'
+        : `Home • ${CATEGORY_META[activeKey]?.title || ''}`,
       isHome: true,
-      productsCount: products?.length || 0,
-      productsByCategory
+      productsCount: total,
+      productsByCategory,
+      // datos para la UI de filtros
+      filters: {
+        active: activeKey,
+        counts,
+        total,
+        categories: Object.values(CATEGORY_META).map(m => ({
+          key: m.key,
+          title: m.title,
+          count: counts[m.key] || 0,
+        })),
+      },
     });
   } catch (err) {
     next(err);
   }
 });
 
-router.get('/realtimeproducts', async (_req, res) => {
-  res.render('realTimeProducts', { pageTitle: 'Tiempo Real', isRealtime: true });
+router.get('/realtimeproducts', (_req, res) => {
+  res.render('realtimeproducts', { pageTitle: 'Tiempo Real', isRealtime: true });
 });
 
 module.exports = router;

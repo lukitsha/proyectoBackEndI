@@ -96,13 +96,12 @@
         }
 
         .nav-links a.active::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 18px;
-            right: 18px;
-            height: 2px;
-            background: #dc2626;
+        bottom: 0;        /* en lugar de -2px */
+        left: 0;
+        right: 0;
+         height: 2px;
+        background: #991b1b; /* un tono más oscuro si querés */
+        border-radius: 0 0 6px 6px; /* opcional para redondear */
         }
 
         .nav-divider {
