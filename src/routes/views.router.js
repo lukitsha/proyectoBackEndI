@@ -57,7 +57,7 @@ router.get('/', async (req, res, next) => {
       productsByCategory = productsByCategory.filter(s => s.key === activeKey);
     }
 
-    res.render('home', {
+    res.render('pages/home', {
       pageTitle: activeKey === 'all'
         ? 'Home'
         : `Home • ${CATEGORY_META[activeKey]?.title || ''}`,
@@ -82,7 +82,7 @@ router.get('/', async (req, res, next) => {
 });
 
 router.get('/realtimeproducts', (_req, res) => {
-  res.render('realtimeproducts', { pageTitle: 'Tiempo Real', isRealtime: true });
+  res.render('pages/realTimeProducts', { pageTitle: 'Tiempo Real', isRealtime: true });
 });
 
 module.exports = router;

@@ -1,0 +1,24 @@
+<main class="main-container">
+  <style>
+    .err-box{
+      background:#1a1a1a;border:1px solid #404040;border-radius:10px;
+      padding:40px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.3)
+    }
+    .err-title{color:#e5e5e5;font-size:1.6rem;margin-bottom:8px}
+    .err-sub{color:#a3a3a3;margin-bottom:16px;white-space:pre-wrap}
+    .err-btn{
+      display:inline-block;background:#dc2626;color:#fff;text-decoration:none;
+      padding:12px 22px;border-radius:8px;font-weight:700;
+      box-shadow:0 4px 15px rgba(220,38,38,.3);transition:.2s
+    }
+    .err-btn:hover{background:#b91c1c;transform:translateY(-1px)}
+  </style>
+  <div class="err-box">
+    <div style="font-size:3rem;opacity:.8;margin-bottom:10px">🚧</div>
+    <h2 class="err-title">Ocurrió un error</h2>
+    {{#if message}}<p class="err-sub">{{message}}</p>{{else}}
+      <p class="err-sub">Intentalo nuevamente en unos segundos.</p>
+    {{/if}}
+    <a class="err-btn" href="/">Volver al Home</a>
+  </div>
+</main>

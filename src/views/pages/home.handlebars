@@ -3,6 +3,7 @@
   .page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;padding-bottom:18px;border-bottom:2px solid #404040}
   .page-title{font-size:1.8rem;color:#e5e5e5;display:flex;align-items:center;gap:12px}
   .product-count{background:#dc2626;color:#fff;padding:8px 20px;border-radius:50px;font-weight:600;font-size:.9rem}
+  
   /* Filtros */
   .filters{display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap}
   .chip{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;border:1px solid #404040;background:#1a1a1a;color:#e5e5e5;font-weight:700;font-size:.9rem;text-decoration:none;transition:.2s}
@@ -13,26 +14,126 @@
   .chip.total{margin-right:8px}
   .chip.badge{position:relative}
   .chip .count{background:#404040;color:#a3a3a3;border-radius:6px;font-size:.75rem;padding:2px 6px}
-  /* Categorías y tarjetas */
+  
+  /* Categorías y tarjetas MEJORADAS */
   .cat-block{margin-top:22px}
   .cat-title{display:flex;align-items:center;gap:10px;color:#e5e5e5;font-size:1.2rem;margin-bottom:14px}
   .cat-badge{font-size:.75rem;background:#dc2626;color:#fff;border-radius:999px;padding:4px 10px}
   .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
   @media (max-width:1200px){.grid{grid-template-columns:repeat(2,1fr)}}
   @media (max-width:640px){.grid{grid-template-columns:1fr}}
-  .card{background:#1a1a1a;border:1px solid #404040;border-radius:10px;padding:18px;position:relative;overflow:hidden;transition:.25s}
+  
+  .card{
+    background:#1a1a1a;
+    border:1px solid #404040;
+    border-radius:10px;
+    padding:18px;
+    position:relative;
+    overflow:hidden;
+    transition:.25s;
+    display:flex;
+    flex-direction:column;
+    min-height:420px;
+  }
   .card::before{content:'';position:absolute;inset:auto auto 0 0;height:3px;width:100%;background:#dc2626;opacity:.8}
   .card:hover{transform:translateY(-2px);border-color:#dc2626;box-shadow:0 5px 20px rgba(220,38,38,.2)}
-  .top{display:flex;justify-content:space-between;gap:10px;margin-bottom:8px}
-  .pid{background:#404040;color:#a3a3a3;padding:3px 8px;border-radius:4px;font-size:.7rem;font-family:monospace;max-width:60%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  
+  /* Header de card */
+  .card-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:10px;
+    margin-bottom:12px;
+    flex-shrink:0;
+  }
+  
+  /* ID completo sin truncar */
+  .pid{
+    background:#404040;
+    color:#a3a3a3;
+    padding:4px 8px;
+    border-radius:4px;
+    font-size:.7rem;
+    font-family:monospace;
+    max-width:none;
+    overflow:visible;
+    text-overflow:clip;
+    white-space:nowrap;
+  }
+  
+  /* Contenido de card */
+  .card-content{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+  }
+  
+  /* Footer de card */
+  .card-footer{
+    margin-top:auto;
+    padding-top:12px;
+    border-top:1px solid #404040;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-shrink:0;
+  }
+  
   .cat{background:#dc2626;color:#fff;padding:3px 8px;border-radius:4px;font-size:.7rem;font-weight:700;text-transform:uppercase}
-  .thumb{width:100%;aspect-ratio:16/9;border:1px solid #404040;background:#2d2d2d;border-radius:8px;display:flex;align-items:center;justify-content:center;margin:10px 0 12px;overflow:hidden}
-  .thumb img{width:100%;height:100%;object-fit:cover}
+  
+  /* IMAGEN MAXIMIZADA CON FONDO BLANCO - IGUAL QUE REALTIME */
+  .thumb{
+    width:100%;
+    aspect-ratio:16/9;
+    background:#ffffff;
+    border-radius:8px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:10px 0 12px;
+    overflow:hidden;
+    border:1px solid #e5e5e5;
+  }
+  
+  .thumb img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    padding:0;
+  }
+  
+  /* Para el emoji cuando no hay imagen */
+  .thumb > div {
+    background:transparent !important;
+  }
+  
   .title{font-size:1.05rem;color:#e5e5e5;font-weight:800;margin:6px 0 4px}
-  .desc{color:#a3a3a3;font-size:.9rem;line-height:1.5;min-height:42px}
-  .specs{display:flex;flex-wrap:wrap;gap:10px;border-top:1px solid #404040;padding-top:10px;margin-top:10px}
-  .spec{display:flex;gap:6px;align-items:center;background:#141414;border:1px solid #2e2e2e;border-radius:6px;padding:6px 10px;color:#e5e5e5;font-size:.85rem}
-  .bottom{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+  .desc{color:#a3a3a3;font-size:.9rem;line-height:1.5;margin-bottom:12px}
+  
+  .specs{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:auto;
+    padding:10px;
+    background:#0d0d0d;
+    border-radius:6px;
+    border:1px solid #2e2e2e;
+  }
+  .spec{
+    display:inline-flex;
+    gap:4px;
+    align-items:center;
+    background:#1a1a1a;
+    border:1px solid #404040;
+    border-radius:6px;
+    padding:5px 8px;
+    color:#e5e5e5;
+    font-size:.8rem;
+  }
+  .spec strong{color:#dc2626;font-weight:600}
+  
   .price{color:#dc2626;font-weight:900;font-size:1.2rem}
   .stock{background:#1a1a1a;border:1px solid #404040;color:#e5e5e5;padding:6px 10px;border-radius:8px;font-weight:700;font-size:.85rem}
   .stock.low{border-color:#dc2626;color:#dc2626}
@@ -75,29 +176,33 @@
         <div class="grid">
           {{#each this.items}}
             <article class="card">
-              <div class="top">
+              <div class="card-header">
                 <span class="pid">ID: {{_id}}</span>
                 <span class="cat">{{../badge}}</span>
               </div>
 
-              <div class="thumb">
-                {{#if thumbnails.[0]}}
-                  <img src="{{thumbnails.[0]}}" alt="{{title}}">
-                {{else}} 🎯 {{/if}}
+              <div class="card-content">
+                <div class="thumb">
+                  {{#if thumbnails.[0]}}
+                    <img src="{{thumbnails.[0]}}" alt="{{title}}">
+                  {{else}} 
+                    <div style="font-size:2.2rem;color:#525252">🎯</div>
+                  {{/if}}
+                </div>
+
+                <h3 class="title">{{title}}</h3>
+                <p class="desc">{{#if description}}{{description}}{{else}}Sin descripción{{/if}}</p>
+
+                {{#if specs}}
+                  <div class="specs">
+                    {{#each specs}}
+                      <span class="spec"><strong>{{@key}}:</strong> {{this}}</span>
+                    {{/each}}
+                  </div>
+                {{/if}}
               </div>
 
-              <h3 class="title">{{title}}</h3>
-              <p class="desc">{{#if description}}{{description}}{{else}}Sin descripción{{/if}}</p>
-
-              {{#if specs}}
-                <div class="specs">
-                  {{#each specs}}
-                    <span class="spec"><strong>{{@key}}:</strong> {{this}}</span>
-                  {{/each}}
-                </div>
-              {{/if}}
-
-              <div class="bottom">
+              <div class="card-footer">
                 <span class="price">${{price}}</span>
                 <span class="stock {{#if (eq stock 0)}}out{{else}}{{#if (lte stock 10)}}low{{/if}}{{/if}}">
                   Stock: {{stock}}

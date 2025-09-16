@@ -1,0 +1,27 @@
+<nav class="nav-header">
+  <div class="nav-container">
+    <a href="/" class="logo">
+      <div class="logo-icon">🎯</div>
+      <span>Airsoft Store</span>
+    </a>
+    <div class="nav-links">
+      <a href="/" class="{{#if isHome}}active{{/if}}">
+        <span class="icon">🏠</span>
+        <span>Home</span>
+      </a>
+      <a href="/realtimeproducts" class="{{#if isRealtime}}active{{/if}}">
+        <span class="icon">⚡</span>
+        <span>Tiempo Real</span>
+      </a>
+      <div class="nav-divider"></div>
+      <a href="/api/products" target="_blank">
+        <span class="icon">📦</span>
+        <span>Productos</span>
+      </a>
+      <a href="/api" target="_blank">
+        <span class="icon">🔧</span>
+        <span>API</span>
+      </a>
+    </div>
+  </div>
+</nav>

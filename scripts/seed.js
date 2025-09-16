@@ -309,7 +309,7 @@ const SEED_PRODUCTS = [
     category: 'magazines',
     status: 'active',
     stock: 60,
-    thumbnails: [],
+    thumbnails: img('https://www.arsenalsports.com/img/16055/produtos/600/1d8286465e58706409cb3a9b0ed438bf.jpg'),
     specs: { capacity: 130, compatibility: ['AK74 AEG', 'AK47/AKM AEG'], material: 'Polímero' },
     createdAt: now(),
     updatedAt: now()
@@ -322,7 +322,7 @@ const SEED_PRODUCTS = [
     category: 'magazines',
     status: 'active',
     stock: 40,
-    thumbnails: [],
+    thumbnails: img('https://www.arsenalsports.com/img/27698/produtos/600/458846a4be1bb3403c06701607f6745c.jpg'),
     specs: { capacity: 500, compatibility: ['AK74 AEG', 'AK47/AKM AEG'], material: 'Polímero' },
     createdAt: now(),
     updatedAt: now()
@@ -337,7 +337,7 @@ const SEED_PRODUCTS = [
     category: 'magazines',
     status: 'active',
     stock: 50,
-    thumbnails: [],
+    thumbnails: img('https://www.arsenalsports.com/img/30688/produtos/600/99563c3a3af1e8a142a217586bc7470a.png'),
     specs: { capacity: 140, compatibility: ['G36 / G36C AEG'], material: 'Polímero' },
     createdAt: now(),
     updatedAt: now()
@@ -350,7 +350,7 @@ const SEED_PRODUCTS = [
     category: 'magazines',
     status: 'active',
     stock: 40,
-    thumbnails: [],
+    thumbnails: img('https://www.arsenalsports.com/img/5604/produtos/600/e3f31f71120d3caa7e57f0880237ec43.jpg'),
     specs: { capacity: 470, compatibility: ['G36 / G36C AEG'], material: 'Polímero' },
     createdAt: now(),
     updatedAt: now()
@@ -365,7 +365,7 @@ const SEED_PRODUCTS = [
     category: 'magazines',
     status: 'active',
     stock: 45,
-    thumbnails: [],
+    thumbnails: img('https://www.arsenalsports.com/img/26820/produtos/600/eeccfbf19df9e374f2d5e328d0604e8a.jpg'),
     specs: { capacity: 120, compatibility: ['MP5 AEG'], material: 'Metal / Polímero' },
     createdAt: now(),
     updatedAt: now()
@@ -378,7 +378,7 @@ const SEED_PRODUCTS = [
     category: 'magazines',
     status: 'active',
     stock: 40,
-    thumbnails: [],
+    thumbnails: img('https://www.arsenalsports.com/img/15993/produtos/600/e0fd58b4e8647b24b0c9560602746911.jpg'),
     specs: { capacity: 200, compatibility: ['MP5 AEG'], material: 'Metal / Polímero' },
     createdAt: now(),
     updatedAt: now()
@@ -393,7 +393,7 @@ const SEED_PRODUCTS = [
     category: 'magazines',
     status: 'active',
     stock: 30,
-    thumbnails: [],
+    thumbnails: img('https://www.arsenalsports.com/img/30100/produtos/600/50a9093d179299cd4f514384059ff679.jpg'),
     specs: { capacity: 120, compatibility: ['SCAR‑H AEG'], material: 'Polímero' },
     createdAt: now(),
     updatedAt: now()
@@ -406,7 +406,7 @@ const SEED_PRODUCTS = [
     category: 'magazines',
     status: 'active',
     stock: 25,
-    thumbnails: [],
+    thumbnails: img('https://www.arsenalsports.com/img/26141/produtos/600/83f6fd3a216829363ba177d6fcf4db76.jpg'),
     specs: { capacity: 470, compatibility: ['SCAR‑H AEG'], material: 'Polímero' },
     createdAt: now(),
     updatedAt: now()
@@ -421,7 +421,7 @@ const SEED_PRODUCTS = [
     category: 'magazines',
     status: 'active',
     stock: 35,
-    thumbnails: [],
+    thumbnails: img('https://www.arsenalsports.com/img/28734/produtos/600/ae0de68fde1839912b05ada79fc79641.jpg'),
     specs: { capacity: 110, compatibility: ['AUG AEG'], material: 'Polímero' },
     createdAt: now(),
     updatedAt: now()
@@ -434,7 +434,7 @@ const SEED_PRODUCTS = [
     category: 'magazines',
     status: 'active',
     stock: 30,
-    thumbnails: [],
+    thumbnails: img('https://www.arsenalsports.com/img/27695/produtos/600/caf9f7825ac68fc1e98d603c361b4c22.jpg'),
     specs: { capacity: 330, compatibility: ['AUG AEG'], material: 'Polímero' },
     createdAt: now(),
     updatedAt: now()
@@ -449,7 +449,7 @@ const SEED_PRODUCTS = [
     category: 'magazines',
     status: 'active',
     stock: 80,
-    thumbnails: [],
+    thumbnails: img('https://www.arsenalsports.com/img/8374/produtos/600/d315b467564dc1cd8effed9dece99e2a.jpg'),
     specs: { capacity: 130, compatibility: ['M4/M16/AR‑15 AEG'], material: 'Polímero POM' },
     createdAt: now(),
     updatedAt: now()
@@ -462,7 +462,7 @@ const SEED_PRODUCTS = [
     category: 'magazines',
     status: 'active',
     stock: 60,
-    thumbnails: [],
+    thumbnails: img('https://www.arsenalsports.com/img/5081/produtos/600/fa371312f1bf60370808408eb731a9e3.jpg'),
     specs: { capacity: 300, compatibility: ['M4/M16/AR‑15 AEG'], material: 'Metal / Polímero' },
     createdAt: now(),
     updatedAt: now()
@@ -477,7 +477,7 @@ const SEED_PRODUCTS = [
     category: 'magazines',
     status: 'active',
     stock: 20,
-    thumbnails: [],
+    thumbnails: img('https://www.arsenalsports.com/img/16387/produtos/600/291cccc33021f87b2129ec7bcdc8e383.jpg'),
     specs: { capacity: 110, compatibility: ['UMP45 (verificar AEG/GBB)'], material: 'Polímero' },
     createdAt: now(),
     updatedAt: now()
@@ -490,13 +490,13 @@ const SEED_PRODUCTS = [
     category: 'magazines',
     status: 'active',
     stock: 22,
-    thumbnails: [],
+    thumbnails: img('https://www.arsenalsports.com/img/17785/produtos/600/ad67ae48de59804cd2ca5df2b6eaf5d1.jpg'),
     specs: { capacity: 420, compatibility: ['UMP AEG'], material: 'Polímero' },
     createdAt: now(),
     updatedAt: now()
   },
 
-  // ASR117 / M4 (tu réplica)
+  // ASR117 / M4 
   {
     id: uuid(),
     title: 'APS U‑Mag M4 Mid‑Cap 130rds (AEG) — Black Reaper',
@@ -505,7 +505,7 @@ const SEED_PRODUCTS = [
     category: 'magazines',
     status: 'active',
     stock: 80,
-    thumbnails: [],
+    thumbnails: img('https://www.arsenalsports.com/img/17785/produtos/600/ad67ae48de59804cd2ca5df2b6eaf5d1.jpg'),
     specs: { capacity: 130, compatibility: ['M4/M16/AR‑15 AEG'], material: 'Polímero POM' },
     createdAt: now(),
     updatedAt: now()
@@ -518,7 +518,7 @@ const SEED_PRODUCTS = [
     category: 'magazines',
     status: 'active',
     stock: 60,
-    thumbnails: [],
+    thumbnails: img('https://www.arsenalsports.com/img/17785/produtos/600/ad67ae48de59804cd2ca5df2b6eaf5d1.jpg'),
     specs: { capacity: 300, compatibility: ['M4/M16/AR‑15 AEG'], material: 'Metal / Polímero' },
     createdAt: now(),
     updatedAt: now()

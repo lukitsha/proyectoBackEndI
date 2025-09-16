@@ -75,7 +75,18 @@ app.get('/api', (_req, res) => {
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
 
-/* ========= 404 ========= */
+/* ========= 404 Web (HTML) =========
+   Si acepta HTML y no es /api/*, renderizamos una vista bonita.
+*/
+app.use((req, res, next) => {
+  const wantsHTML = req.accepts('html') && !req.originalUrl.startsWith('/api/');
+  if (wantsHTML) {
+    return res.status(404).render('errors/404', { pageTitle: '404 - Not Found' });
+  }
+  next();
+});
+
+/* ========= 404 JSON (API) ========= */
 app.use((req, res) => {
   res.status(404).json({
     error: 'Endpoint no encontrado',
@@ -88,6 +99,16 @@ app.use((req, res) => {
 // eslint-disable-next-line no-unused-vars
 app.use((err, _req, res, _next) => {
   const status = err.statusCode || 500;
+
+  // Si es web y acepta HTML, renderizamos 500.s
+  if (_req && _req.accepts && _req.accepts('html') && !_req.originalUrl.startsWith('/api/')) {
+    return res.status(status).render('errors/500', {
+      pageTitle: 'Error',
+      message: err.message || 'Error interno del servidor',
+    });
+  }
+
+  // Fallback JSON (API)
   res.status(status).json({
     error: err.name || 'Error',
     message: err.message || 'Error interno del servidor',

@@ -1,0 +1,19 @@
+{{#if pageHeaderTitle}}
+  <section style="
+    max-width:1400px;margin:20px auto 0;padding:0 20px;
+  ">
+    <div style="
+      background:#2d2d2d;border:1px solid #404040;border-radius:10px;
+      padding:20px;display:flex;align-items:center;gap:12px;
+      box-shadow:0 5px 20px rgba(0,0,0,0.3);
+    ">
+      {{#if pageHeaderIcon}}<span style="font-size:1.2rem">{{pageHeaderIcon}}</span>{{/if}}
+      <div>
+        <h1 style="font-size:1.4rem;color:#e5e5e5;margin:0">{{pageHeaderTitle}}</h1>
+        {{#if pageHeaderSubtitle}}
+          <p style="color:#a3a3a3;margin:4px 0 0">{{pageHeaderSubtitle}}</p>
+        {{/if}}
+      </div>
+    </div>
+  </section>
+{{/if}}

@@ -12,33 +12,150 @@
   .products-section{background:#2d2d2d;border-radius:10px;padding:25px;box-shadow:0 5px 20px rgba(0,0,0,.3);border:1px solid #404040}
   .section-title{color:#e5e5e5;font-size:1.3rem;margin-bottom:20px;padding-bottom:15px;border-bottom:2px solid #404040;display:flex;align-items:center;gap:10px}
 
-  /* === Cards estilo Home === */
+  /* === Cards mejoradas === */
   .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
   @media (max-width:1200px){.grid{grid-template-columns:repeat(2,1fr)}}
   @media (max-width:640px){.grid{grid-template-columns:1fr}}
 
-  .card{background:#1a1a1a;border:1px solid #404040;border-radius:10px;padding:18px;position:relative;overflow:hidden;transition:.25s}
+  .card{
+    background:#1a1a1a;
+    border:1px solid #404040;
+    border-radius:10px;
+    padding:18px;
+    position:relative;
+    overflow:hidden;
+    transition:.25s;
+    display:flex;
+    flex-direction:column;
+    min-height:450px;
+  }
   .card::before{content:'';position:absolute;inset:auto auto 0 0;height:3px;width:100%;background:#dc2626;opacity:.8}
   .card:hover{transform:translateY(-2px);border-color:#dc2626;box-shadow:0 5px 20px rgba(220,38,38,.2)}
-  .top{display:flex;justify-content:space-between;gap:10px;margin-bottom:8px}
-  .pid{background:#404040;color:#a3a3a3;padding:3px 8px;border-radius:4px;font-size:.7rem;font-family:monospace;max-width:60%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  
+  /* Header de la card */
+  .card-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:10px;
+    margin-bottom:12px;
+    flex-shrink:0;
+  }
+  
+  /* ID EN MÚLTIPLES LÍNEAS CON BOTÓN */
+  .pid {
+    background:#404040;
+    color:#a3a3a3;
+    padding:6px 8px;
+    border-radius:4px;
+    font-size:.65rem;
+    font-family:monospace;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:4px;
+    word-break:break-all;
+    max-width:65%;
+  }
+  
+  .pid-label {
+    color:#737373;
+    font-size:.6rem;
+    font-weight:600;
+    text-transform:uppercase;
+  }
+  
+  .pid-value {
+    color:#e5e5e5;
+    font-size:.7rem;
+    line-height:1.2;
+  }
+  
+  .copy-id-btn {
+    background:#525252;
+    color:#e5e5e5;
+    border:none;
+    padding:3px 8px;
+    border-radius:4px;
+    cursor:pointer;
+    font-size:.6rem;
+    transition:all 0.2s;
+    align-self:stretch;
+    margin-top:2px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+  }
+  .copy-id-btn:hover{background:#dc2626;transform:scale(1.02)}
+  .copy-id-btn.copied{background:#16a34a;animation:copySuccess 0.3s ease}
+  @keyframes copySuccess{0%{transform:scale(1)}50%{transform:scale(1.1)}100%{transform:scale(1)}}
+  
+  /* Contenido de la card */
+  .card-content{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+  }
+  
+  /* Footer de la card */
+  .card-footer{
+    margin-top:auto;
+    padding-top:12px;
+    border-top:1px solid #404040;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-shrink:0;
+  }
+  
+  .card-footer .actions{
+    display:flex;
+    gap:8px;
+    align-items:center;
+  }
+  
   .cat{background:#dc2626;color:#fff;padding:3px 8px;border-radius:4px;font-size:.7rem;font-weight:700;text-transform:uppercase}
-  .thumb{width:100%;aspect-ratio:16/9;border:1px solid #404040;background:#2d2d2d;border-radius:8px;display:flex;align-items:center;justify-content:center;margin:10px 0 12px;overflow:hidden}
-  .thumb img{width:100%;height:100%;object-fit:cover}
-  .title{font-size:1.05rem;color:#e5e5e5;font-weight:800;margin:6px 0 4px}
-  .desc{color:#a3a3a3;font-size:.9rem;line-height:1.5;min-height:42px}
-  .specs{display:flex;flex-wrap:wrap;gap:10px;border-top:1px solid #404040;padding-top:10px;margin-top:10px}
-  .spec{display:flex;gap:6px;align-items:center;background:#141414;border:1px solid #2e2e2e;border-radius:6px;padding:6px 10px;color:#e5e5e5;font-size:.85rem}
-  .bottom{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+  
+  /* IMAGEN MAXIMIZADA CON FONDO BLANCO */
+  .thumb {
+    width:100%;
+    aspect-ratio:16/9;
+    background:#ffffff;
+    border-radius:8px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:10px 0 12px;
+    overflow:hidden;
+    border:1px solid #e5e5e5;
+  }
+  
+  .thumb img {
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    padding:0;
+  }
+  
+  /* Para el emoji cuando no hay imagen */
+  .thumb > div {
+    background:transparent !important;
+  }
+  
+  .title{font-size:1.15rem;color:#e5e5e5;font-weight:900;margin:6px 0 4px}
+  .desc{color:#a3a3a3;font-size:.9rem;line-height:1.5;margin-bottom:12px}
+  .specs{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding:10px;background:#0d0d0d;border-radius:6px;border:1px solid #2e2e2e}
+  .spec{display:inline-flex;gap:4px;align-items:center;background:#1a1a1a;border:1px solid #404040;border-radius:6px;padding:5px 8px;color:#e5e5e5;font-size:.8rem}
+  .spec strong{color:#dc2626;font-weight:600}
   .price{color:#dc2626;font-weight:900;font-size:1.2rem}
   .stock{background:#1a1a1a;border:1px solid #404040;color:#e5e5e5;padding:6px 10px;border-radius:8px;font-weight:700;font-size:.85rem}
   .stock.low{border-color:#dc2626;color:#dc2626}
   .stock.out{background:#dc2626;color:#fff;border-color:#dc2626}
-  .actions{display:flex;gap:8px}
   .delete-btn{background:#dc2626;color:#fff;border:none;padding:8px 12px;border-radius:6px;cursor:pointer;transition:.2s;font-weight:700;font-size:.85rem}
   .delete-btn:hover{background:#b91c1c;transform:translateY(-1px)}
 
-  /* === Sidebar & Forms === */
+  /* Sidebar & Forms */
   .sidebar{display:flex;flex-direction:column;gap:25px}
   .form-section{background:#2d2d2d;border-radius:10px;padding:25px;box-shadow:0 5px 20px rgba(0,0,0,.3);border:1px solid #404040}
   .form-title{color:#e5e5e5;font-size:1.1rem;margin-bottom:20px;display:flex;align-items:center;gap:10px;padding-bottom:15px;border-bottom:1px solid #404040}
@@ -58,7 +175,7 @@
   .toast{position:fixed;bottom:30px;right:30px;padding:15px 25px;border-radius:8px;color:#fff;font-weight:600;box-shadow:0 10px 30px rgba(0,0,0,.3);animation:slideInRight .3s ease;z-index:1000;display:flex;align-items:center;gap:10px}
   @keyframes slideInRight{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
   .toast.success{background:#16a34a}.toast.error{background:#dc2626}.toast.info{background:#2563eb}
-  .empty-state{text-align:center;padding:60px 20px;color:#737373;background:#1a1a1a;border-radius:8px;border:1px solid #404040}
+  .empty-state{text-align:center;padding:80px 20px;color:#737373;background:#1a1a1a;border-radius:8px;border:1px solid #404040;min-height:400px;display:flex;flex-direction:column;align-items:center;justify-content:center}
   .empty-state svg{width:80px;height:80px;margin-bottom:20px;opacity:.3}
   .empty-state h3{font-size:1.3rem;margin-bottom:10px;color:#e5e5e5}
 
@@ -66,16 +183,7 @@
   .compatibility-input{display:flex;gap:5px}
   .add-compatibility-btn{background:#404040;color:#e5e5e5;border:none;padding:8px;border-radius:4px;cursor:pointer;font-size:.8rem}
   .add-compatibility-btn:hover{background:#525252}
-
-  /* Evitar puntitos/bullets por defecto en el contenedor */
-    #products-list, .grid { list-style: none; padding-left: 0; }
-
-    /* Título más marcado */
-    .title { font-size: 1.15rem; font-weight: 900; }
-
-    /* Asegurar que si no hay imagen, no aparezca ningún marcador extraño */
-    .thumb { display: flex; align-items: center; justify-content: center; }
-
+  #products-list{list-style:none;padding-left:0}
 </style>
 
 <div class="rt-container">
@@ -198,7 +306,7 @@
 <!-- Scripts -->
 <script src="/socket.io/socket.io.js"></script>
 <script>
-  // === Configuración de specs por categoría (igual que antes)
+  // === Configuración de specs por categoría ===
   const categorySpecs = {
     replicas: `
       <div class="form-row">
@@ -305,126 +413,8 @@
     }
   });
 
-  // Toasts
-  function showToast(message, type='info'){
-    const wrap = document.getElementById('toast-container');
-    const t = document.createElement('div');
-    t.className = `toast ${type}`;
-    const icon = type==='success'?'✓':type==='error'?'✕':'ℹ';
-    t.innerHTML = `<span>${icon}</span> ${message}`;
-    wrap.appendChild(t);
-    setTimeout(()=>{ t.style.animation='slideInRight .3s ease reverse'; setTimeout(()=>t.remove(),300); },3000);
-  }
-
-  // === RENDER: tarjetas estilo Home ===
-  function renderProducts(products){
-    const list = document.getElementById('products-list');
-    const empty = document.getElementById('empty-state');
-
-    if (!products || !products.length){
-      list.style.display='none'; empty.style.display='block'; return;
-    }
-    list.style.display='grid'; empty.style.display='none';
-
-    const html = products.map(p=>{
-      const id = p._id || p.id || '';
-      const cat = (p.category || 'general').toLowerCase();
-      const price = Number(p.price||0).toFixed(2);
-      const stock = Number(p.stock||0);
-      const stockClass = stock===0 ? 'out' : (stock<=10 ? 'low' : '');
-      const img = (Array.isArray(p.thumbnails) && p.thumbnails[0]) ? `<img src="${p.thumbnails[0]}" alt="${p.title}">` : '🎯';
-
-      // Muestro hasta 4 specs clave si existen
-      const specs = p.specs || {};
-      const specPairs = Object.entries(specs).slice(0,4).map(([k,v])=>`<span class="spec"><strong>${k}:</strong> ${v}</span>`).join('');
-
-      return `
-        <article class="card" data-product-id="${id}">
-          <div class="top">
-            <span class="pid">ID: ${id}</span>
-            <span class="cat">${cat}</span>
-          </div>
-
-          <div class="thumb">${img}</div>
-
-          <h3 class="title">${p.title || 'Sin título'}</h3>
-          <p class="desc">${p.description || 'Sin descripción'}</p>
-
-          ${ specPairs ? `<div class="specs">${specPairs}</div>` : '' }
-
-          <div class="bottom">
-            <span class="price">$${price}</span>
-            <div class="actions">
-              <span class="stock ${stockClass}">Stock: ${stock}</span>
-              <button class="delete-btn" onclick="deleteProduct('${id}')">Eliminar</button>
-            </div>
-          </div>
-        </article>
-      `;
-    }).join('');
-
-    list.innerHTML = html;
-  }
-
-  // Eliminar (rellena el form y dispara)
-  function deleteProduct(id){
-    if (confirm('¿Estás seguro de que deseas eliminar este producto?')){
-      document.getElementById('deleteId').value = id;
-      document.getElementById('ws-delete-form').dispatchEvent(new Event('submit'));
-    }
-  }
-
-  // Prepara payload del form (normaliza tipos)
-  function prepareFormData(form){
-    const formData = new FormData(form);
-    const data = {};
-    for (let [key, value] of formData.entries()) {
-      if (key==='price' || key==='stock') data[key]=Number(value);
-      else if (key==='status') data[key]=form.status.checked;
-      else if (key==='thumbnails' && value) data[key]=[value];
-      else if (value && !['caliber','weight','length','firingMode','hopUp','capacity','compatibility','material','diameter','quantity','voltage','chemistry','connector'].includes(key)) {
-        data[key]=value;
-      }
-    }
-    const category = data.category;
-    if (category){
-      data.specs = {};
-      switch(category){
-        case 'replicas':
-          data.specs.caliber = formData.get('caliber');
-          data.specs.weight = Number(formData.get('weight'));
-          data.specs.length = Number(formData.get('length'));
-          data.specs.firingMode = formData.get('firingMode');
-          data.specs.hopUp = form.hopUp ? form.hopUp.checked : false;
-          break;
-        case 'magazines':
-          data.specs.capacity = Number(formData.get('capacity'));
-          data.specs.material = formData.get('material');
-          const comp = formData.get('compatibility');
-          data.specs.compatibility = comp ? comp.split(',').map(c=>c.trim()).filter(Boolean) : [];
-          break;
-        case 'bbs':
-          data.specs.weight = Number(formData.get('weight'));
-          data.specs.diameter = Number(formData.get('diameter'));
-          data.specs.quantity = Number(formData.get('quantity'));
-          data.specs.material = formData.get('material');
-          break;
-        case 'batteries':
-          data.specs.voltage = Number(formData.get('voltage'));
-          data.specs.capacity = Number(formData.get('capacity'));
-          data.specs.chemistry = formData.get('chemistry');
-          data.specs.connector = formData.get('connector');
-          break;
-      }
-    }
-    return data;
-  }
-
-  // Exponer helpers globales (por si tu realtime.js los usa)
-  window.renderProducts = renderProducts;
-  window.prepareFormData = prepareFormData;
-  window.showToast = showToast;
-  window.deleteProduct = deleteProduct;
+  // Hacer disponible globalmente
+  window.categorySpecs = categorySpecs;
 </script>
 
 <!-- Tu lógica de sockets/fetch -->
