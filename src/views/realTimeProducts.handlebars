@@ -66,6 +66,16 @@
   .compatibility-input{display:flex;gap:5px}
   .add-compatibility-btn{background:#404040;color:#e5e5e5;border:none;padding:8px;border-radius:4px;cursor:pointer;font-size:.8rem}
   .add-compatibility-btn:hover{background:#525252}
+
+  /* Evitar puntitos/bullets por defecto en el contenedor */
+    #products-list, .grid { list-style: none; padding-left: 0; }
+
+    /* Título más marcado */
+    .title { font-size: 1.15rem; font-weight: 900; }
+
+    /* Asegurar que si no hay imagen, no aparezca ningún marcador extraño */
+    .thumb { display: flex; align-items: center; justify-content: center; }
+
 </style>
 
 <div class="rt-container">
