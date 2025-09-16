@@ -1,16 +1,31 @@
+// app.js
+const path = require('path');
 const express = require('express');
 const morgan = require('morgan');
+const exphbs = require('express-handlebars');
 
 const productsRouter = require('./src/routes/products.routes');
 const cartsRouter = require('./src/routes/carts.routes');
 
 const app = express();
 
-// Middlewares
+/*  Middlewares base */
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(morgan('combined'));
 
-// “Bienvenida” a la API
+// Archivos estáticos (JS cliente, CSS, imágenes)
+app.use(express.static(path.join(__dirname, 'public')));
+
+/* Handlebars */
+app.engine('handlebars', exphbs.engine({
+  defaultLayout: 'main',
+  layoutsDir: path.join(__dirname, 'src', 'views', 'layouts'),
+}));
+app.set('view engine', 'handlebars');
+app.set('views', path.join(__dirname, 'src', 'views'));
+
+/* Bienvenida API */
 app.get('/api', (req, res) => {
   res.json({
     name: 'Airsoft E-commerce API',
@@ -33,20 +48,32 @@ app.get('/api', (req, res) => {
   });
 });
 
-// Rutas de negocio
+/* Routers de negocio */
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
 
-// 404 para endpoints no encontrados
+/* =========================
+   (Opcional) Views Router
+   - Lo dejamos listo para el siguiente paso.
+   - Si el archivo aún no existe, no rompe la app.
+========================= */
+try {
+  const viewsRouter = require('./src/routes/views.router');
+  app.use('/', viewsRouter);
+} catch (e) {
+  // Cuando crees src/routes/views.router.js, esto se activará automáticamente.
+}
+
+/* 404 para endpoints no encontrados */
 app.use((req, res) => {
   res.status(404).json({
     error: 'Endpoint no encontrado',
     message: `La ruta ${req.method} ${req.originalUrl} no existe`,
-    availableEndpoints: ['/api/products', '/api/carts']
+    availableEndpoints: ['/api/products', '/api/carts', '/api']
   });
 });
 
-// Manejo de errores
+/* Manejo de errores */
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
   const status = err.statusCode || 500;

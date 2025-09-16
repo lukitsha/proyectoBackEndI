@@ -5,6 +5,9 @@ class CartsController {
   async createCart(req, res, next) {
     try {
       const newCart = await cartsService.createCart();
+
+      // Emitir evento global de creación
+      req.app.get('io').emit('cartCreated', newCart);
       
       res.status(201).json({
         status: 'success',
@@ -48,6 +51,9 @@ class CartsController {
       const quantity = req.body.quantity || 1;
       
       const updatedCart = await cartsService.addProductToCart(cid, pid, quantity);
+
+      // Emitir evento para notificar que se actualizó un carrito
+      req.app.get('io').emit('cartUpdated', updatedCart);
       
       res.json({
         status: 'success',
@@ -64,6 +70,9 @@ class CartsController {
       const { cid, pid } = req.params;
       
       const updatedCart = await cartsService.removeProductFromCart(cid, pid);
+
+      // Emitir evento de actualización
+      req.app.get('io').emit('cartUpdated', updatedCart);
       
       res.json({
         status: 'success',
@@ -87,6 +96,9 @@ class CartsController {
       }
       
       const updatedCart = await cartsService.updateProductQuantity(cid, pid, quantity);
+
+      // Emitir evento de actualización
+      req.app.get('io').emit('cartUpdated', updatedCart);
       
       res.json({
         status: 'success',
@@ -101,6 +113,9 @@ class CartsController {
   async deleteCart(req, res, next) {
     try {
       const deletedCart = await cartsService.deleteCart(req.params.cid);
+
+      // Emitir evento global de borrado
+      req.app.get('io').emit('cartDeleted', deletedCart);
       
       res.json({
         status: 'success',

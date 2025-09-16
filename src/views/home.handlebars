@@ -1,0 +1,92 @@
+<style>
+  .home-container{background:#2d2d2d;border-radius:12px;padding:35px;box-shadow:0 10px 40px rgba(0,0,0,.3)}
+  .page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:30px;padding-bottom:20px;border-bottom:2px solid #404040}
+  .page-title{font-size:1.8rem;color:#e5e5e5;display:flex;align-items:center;gap:12px}
+  .product-count{background:#dc2626;color:#fff;padding:8px 20px;border-radius:50px;font-weight:600;font-size:.9rem}
+  .cat-block{margin-top:28px}
+  .cat-title{display:flex;align-items:center;gap:10px;color:#e5e5e5;font-size:1.2rem;margin-bottom:14px}
+  .cat-badge{font-size:.75rem;background:#dc2626;color:#fff;border-radius:999px;padding:4px 10px}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  @media (max-width:1200px){.grid{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:640px){.grid{grid-template-columns:1fr}}
+  .card{background:#1a1a1a;border:1px solid #404040;border-radius:10px;padding:18px;position:relative;overflow:hidden;transition:.25s}
+  .card::before{content:'';position:absolute;inset:auto auto 0 0;height:3px;width:100%;background:#dc2626;opacity:.8}
+  .card:hover{transform:translateY(-2px);border-color:#dc2626;box-shadow:0 5px 20px rgba(220,38,38,.2)}
+  .top{display:flex;justify-content:space-between;gap:10px;margin-bottom:8px}
+  .pid{background:#404040;color:#a3a3a3;padding:3px 8px;border-radius:4px;font-size:.7rem;font-family:monospace;max-width:60%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .cat{background:#dc2626;color:#fff;padding:3px 8px;border-radius:4px;font-size:.7rem;font-weight:700;text-transform:uppercase}
+  .title{font-size:1.05rem;color:#e5e5e5;font-weight:800;margin:6px 0 4px}
+  .desc{color:#a3a3a3;font-size:.9rem;line-height:1.5;min-height:42px}
+  .thumb{width:100%;aspect-ratio:16/9;border:1px solid #404040;background:#2d2d2d;border-radius:8px;display:flex;align-items:center;justify-content:center;margin:10px 0 12px;overflow:hidden}
+  .thumb img{width:100%;height:100%;object-fit:cover}
+  .specs{display:flex;flex-wrap:wrap;gap:10px;border-top:1px solid #404040;padding-top:10px;margin-top:10px}
+  .spec{display:flex;gap:6px;align-items:center;background:#141414;border:1px solid #2e2e2e;border-radius:6px;padding:6px 10px;color:#e5e5e5;font-size:.85rem}
+  .bottom{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+  .price{color:#dc2626;font-weight:900;font-size:1.2rem}
+  .stock{background:#1a1a1a;border:1px solid #404040;color:#e5e5e5;padding:6px 10px;border-radius:8px;font-weight:700;font-size:.85rem}
+  .stock.low{border-color:#dc2626;color:#dc2626}
+  .stock.out{background:#dc2626;color:#fff;border-color:#dc2626}
+  .empty{margin:12px 0;background:#1a1a1a;border:1px solid #404040;border-radius:10px;padding:28px;color:#737373;text-align:center}
+  .action-section{text-align:center;margin-top:40px;padding-top:30px;border-top:1px solid #404040}
+  .btn{display:inline-block;background:#dc2626;color:#fff;padding:14px 30px;border-radius:8px;text-decoration:none;font-weight:700;transition:.25s;box-shadow:0 4px 15px rgba(220,38,38,.3)}
+  .btn:hover{background:#b91c1c;transform:translateY(-2px);box-shadow:0 6px 20px rgba(220,38,38,.4)}
+</style>
+
+<div class="home-container">
+  <div class="page-header">
+    <h1 class="page-title"><span>📦</span> Catálogo de Productos</h1>
+    {{#if productsCount}}<span class="product-count">{{productsCount}} productos</span>{{/if}}
+  </div>
+
+  {{#each productsByCategory}}
+    <section class="cat-block">
+      <h2 class="cat-title">
+        {{this.title}} <span class="cat-badge">{{this.items.length}}</span>
+      </h2>
+
+      {{#if this.items.length}}
+        <div class="grid">
+          {{#each this.items}}
+            <article class="card">
+              <div class="top">
+                <span class="pid">ID: {{_id}}</span>
+                <span class="cat">{{../badge}}</span>
+              </div>
+
+              <div class="thumb">
+                {{#if thumbnails.[0]}}
+                  <img src="{{thumbnails.[0]}}" alt="{{title}}">
+                {{else}} 🎯 {{/if}}
+              </div>
+
+              <h3 class="title">{{title}}</h3>
+              <p class="desc">{{#if description}}{{description}}{{else}}Sin descripción{{/if}}</p>
+
+              {{#if specs}}
+                <div class="specs">
+                  {{#each specs}}
+                    <span class="spec"><strong>{{@key}}:</strong> {{this}}</span>
+                  {{/each}}
+                </div>
+              {{/if}}
+
+              <div class="bottom">
+                <span class="price">${{price}}</span>
+                <span class="stock {{#if (eq stock 0)}}out{{else}}{{#if (lte stock 10)}}low{{/if}}{{/if}}">
+                  Stock: {{stock}}
+                </span>
+              </div>
+            </article>
+          {{/each}}
+        </div>
+      {{else}}
+        <div class="empty">No hay productos en esta categoría.</div>
+      {{/if}}
+    </section>
+  {{/each}}
+
+  <div class="action-section">
+    <p style="color:#737373;margin-bottom:20px">¿Querés gestionarlos en tiempo real?</p>
+    <a href="/realtimeproducts" class="btn">⚡ Ir a Vista en Tiempo Real</a>
+  </div>
+</div>

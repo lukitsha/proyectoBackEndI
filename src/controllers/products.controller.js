@@ -1,3 +1,4 @@
+// src/controllers/products.controller.js
 const productsService = require('../services/products.service');
 
 class ProductsController {
@@ -41,6 +42,10 @@ class ProductsController {
   async createProduct(req, res, next) {
     try {
       const newProduct = await productsService.createProduct(req.body);
+
+      // 🔔 Notificar a todos los clientes conectados (Realtime)
+      const io = req.app.get('io');
+      if (io) io.emit('products:changed');
       
       res.status(201).json({
         status: 'success',
@@ -55,6 +60,10 @@ class ProductsController {
   async updateProduct(req, res, next) {
     try {
       const updatedProduct = await productsService.updateProduct(req.params.pid, req.body);
+
+      // 🔔 (Recomendado) notificar también en updates
+      const io = req.app.get('io');
+      if (io) io.emit('products:changed');
       
       res.json({
         status: 'success',
@@ -69,6 +78,10 @@ class ProductsController {
   async deleteProduct(req, res, next) {
     try {
       const deletedProduct = await productsService.deleteProduct(req.params.pid);
+
+      // 🔔 Notificar a todos los clientes conectados (Realtime)
+      const io = req.app.get('io');
+      if (io) io.emit('products:changed');
       
       res.json({
         status: 'success',
