@@ -1,4 +1,29 @@
 <style>
+  /* SCROLLBAR PERSONALIZADO GLOBAL */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #dc2626 #1a1a1a;
+  }
+  
+  *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  *::-webkit-scrollbar-track {
+    background: #1a1a1a;
+    border-radius: 4px;
+  }
+  
+  *::-webkit-scrollbar-thumb {
+    background: #dc2626;
+    border-radius: 4px;
+  }
+  
+  *::-webkit-scrollbar-thumb:hover {
+    background: #b91c1c;
+  }
+
   .rt-container{max-width:1400px;margin:0 auto}
   .rt-header{background:#2d2d2d;border-radius:10px;padding:25px;margin-bottom:30px;box-shadow:0 5px 20px rgba(0,0,0,.3);display:flex;justify-content:space-between;align-items:center;border:1px solid #404040}
   .rt-title{color:#e5e5e5;font-size:1.8rem;display:flex;align-items:center;gap:12px}
@@ -6,13 +31,21 @@
   .status-indicator{width:10px;height:10px;background:#4ade80;border-radius:50%;animation:pulse 2s infinite}
   @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(74,222,128,.7)}70%{box-shadow:0 0 0 10px rgba(74,222,128,0)}100%{box-shadow:0 0 0 0 rgba(74,222,128,0)}}
 
-  .main-grid{display:grid;grid-template-columns:1fr 450px;gap:30px;margin-bottom:30px}
+  .main-grid{display:grid;grid-template-columns:1fr 400px;gap:30px;margin-bottom:30px;align-items:start}
   @media (max-width:1200px){.main-grid{grid-template-columns:1fr}}
 
-  .products-section{background:#2d2d2d;border-radius:10px;padding:25px;box-shadow:0 5px 20px rgba(0,0,0,.3);border:1px solid #404040}
+  /* PRODUCTS SECTION NORMAL */
+  .products-section{
+    background:#2d2d2d;
+    border-radius:10px;
+    padding:25px;
+    box-shadow:0 5px 20px rgba(0,0,0,.3);
+    border:1px solid #404040;
+  }
+  
   .section-title{color:#e5e5e5;font-size:1.3rem;margin-bottom:20px;padding-bottom:15px;border-bottom:2px solid #404040;display:flex;align-items:center;gap:10px}
 
-  /* === Cards mejoradas === */
+  /* === Cards TAMAÑO ORIGINAL === */
   .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
   @media (max-width:1200px){.grid{grid-template-columns:repeat(2,1fr)}}
   @media (max-width:640px){.grid{grid-template-columns:1fr}}
@@ -155,21 +188,47 @@
   .delete-btn{background:#dc2626;color:#fff;border:none;padding:8px 12px;border-radius:6px;cursor:pointer;transition:.2s;font-weight:700;font-size:.85rem}
   .delete-btn:hover{background:#b91c1c;transform:translateY(-1px)}
 
-  /* Sidebar & Forms */
-  .sidebar{display:flex;flex-direction:column;gap:25px}
-  .form-section{background:#2d2d2d;border-radius:10px;padding:25px;box-shadow:0 5px 20px rgba(0,0,0,.3);border:1px solid #404040}
-  .form-title{color:#e5e5e5;font-size:1.1rem;margin-bottom:20px;display:flex;align-items:center;gap:10px;padding-bottom:15px;border-bottom:1px solid #404040}
-  .form-group{margin-bottom:15px}
-  label{display:block;color:#a3a3a3;font-weight:500;margin-bottom:6px;font-size:.85rem;text-transform:uppercase;letter-spacing:.5px}
-  input,textarea,select{width:100%;padding:10px 12px;background:#1a1a1a;border:1px solid #404040;border-radius:6px;font-size:.95rem;color:#e5e5e5;transition:.2s;font-family:inherit}
+  /* SIDEBAR STICKY FUNCIONANDO */
+  .sidebar{
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+    position:sticky;
+    top:10px;
+    height:fit-content;
+  }
+  
+  .form-section{
+    background:#2d2d2d;
+    border-radius:8px;
+    padding:18px;
+    box-shadow:0 5px 20px rgba(0,0,0,.3);
+    border:1px solid #404040
+  }
+  
+  .form-title{
+    color:#e5e5e5;
+    font-size:.95rem;
+    margin-bottom:15px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding-bottom:10px;
+    border-bottom:1px solid #404040
+  }
+  
+  .form-group{margin-bottom:10px}
+  label{display:block;color:#a3a3a3;font-weight:500;margin-bottom:4px;font-size:.75rem;text-transform:uppercase;letter-spacing:.5px}
+  input,textarea,select{width:100%;padding:6px 10px;background:#1a1a1a;border:1px solid #404040;border-radius:5px;font-size:.85rem;color:#e5e5e5;transition:.2s;font-family:inherit}
   select{cursor:pointer}
-  textarea{resize:vertical;min-height:70px}
+  textarea{resize:vertical;min-height:55px}
   input:focus,textarea:focus,select:focus{outline:none;border-color:#dc2626;box-shadow:0 0 0 2px rgba(220,38,38,.2)}
-  button[type="submit"]{width:100%;background:#dc2626;color:#fff;border:none;padding:12px;border-radius:6px;font-size:.95rem;font-weight:700;cursor:pointer;transition:.2s}
+  button[type="submit"]{width:100%;background:#dc2626;color:#fff;border:none;padding:10px;border-radius:6px;font-size:.85rem;font-weight:700;cursor:pointer;transition:.2s}
   button[type="submit"]:hover{background:#b91c1c;transform:translateY(-1px)}
-  .specs-section{background:#1a1a1a;border-radius:6px;padding:15px;margin-top:10px;border:1px solid #404040}
-  .specs-title{color:#dc2626;font-size:.9rem;font-weight:600;margin-bottom:10px}
-  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  
+  .specs-section{background:#1a1a1a;border-radius:5px;padding:12px;margin-top:8px;border:1px solid #404040}
+  .specs-title{color:#dc2626;font-size:.8rem;font-weight:600;margin-bottom:8px}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 
   /* Toast & Empty */
   .toast{position:fixed;bottom:30px;right:30px;padding:15px 25px;border-radius:8px;color:#fff;font-weight:600;box-shadow:0 10px 30px rgba(0,0,0,.3);animation:slideInRight .3s ease;z-index:1000;display:flex;align-items:center;gap:10px}
@@ -181,9 +240,50 @@
 
   #compatibility-container{display:flex;flex-direction:column;gap:5px}
   .compatibility-input{display:flex;gap:5px}
-  .add-compatibility-btn{background:#404040;color:#e5e5e5;border:none;padding:8px;border-radius:4px;cursor:pointer;font-size:.8rem}
+  .add-compatibility-btn{background:#404040;color:#e5e5e5;border:none;padding:6px;border-radius:4px;cursor:pointer;font-size:.7rem}
   .add-compatibility-btn:hover{background:#525252}
   #products-list{list-style:none;padding-left:0}
+  
+  /* SWEETALERT2 CUSTOM DARK THEME */
+  .swal-dark-popup {
+    border: 1px solid #404040 !important;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5) !important;
+  }
+
+  .swal2-popup {
+    font-size: 0.9rem !important;
+  }
+
+  .swal-confirm-btn {
+    font-weight: 700 !important;
+    transition: all 0.2s !important;
+    padding: 10px 24px !important;
+  }
+
+  .swal-confirm-btn:hover {
+    background-color: #b91c1c !important;
+    transform: translateY(-2px) !important;
+  }
+
+  .swal-cancel-btn {
+    font-weight: 700 !important;
+    transition: all 0.2s !important;
+    padding: 10px 24px !important;
+  }
+
+  .swal-cancel-btn:hover {
+    background-color: #525252 !important;
+    transform: translateY(-2px) !important;
+  }
+  
+  /* Media queries para sidebar responsive */
+  @media (max-width:1200px){
+    .sidebar{
+      position:relative;
+      top:0;
+      height:auto;
+    }
+  }
 </style>
 
 <div class="rt-container">
@@ -198,7 +298,7 @@
 
   <!-- Main Grid -->
   <div class="main-grid">
-    <!-- Products Section -->
+    <!-- Products Section NORMAL -->
     <div class="products-section">
       <h2 class="section-title">📦 Catálogo de Productos</h2>
 
@@ -216,7 +316,7 @@
       </div>
     </div>
 
-    <!-- Sidebar Forms -->
+    <!-- Sidebar STICKY SIN WRAPPER -->
     <div class="sidebar">
       <!-- Create Product Form -->
       <div class="form-section">
@@ -268,7 +368,7 @@
 
           <div class="form-group">
             <label for="status">
-              <input type="checkbox" id="status" name="status" checked style="width:auto;margin-right:8px;"/>
+              <input type="checkbox" id="status" name="status" checked style="width:auto;margin-right:6px;"/>
               Producto Activo
             </label>
           </div>
@@ -303,10 +403,13 @@
 <!-- Toast Container -->
 <div id="toast-container"></div>
 
+<!-- SWEETALERT2 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <!-- Scripts -->
 <script src="/socket.io/socket.io.js"></script>
 <script>
-  // === Configuración de specs por categoría ===
+  // === Configuración de specs por categoría (REDUCIDA) ===
   const categorySpecs = {
     replicas: `
       <div class="form-row">
@@ -331,7 +434,7 @@
       </div>
       <div class="form-group">
         <label for="hopUp">
-          <input type="checkbox" name="hopUp" style="width:auto;margin-right:8px;" />
+          <input type="checkbox" name="hopUp" style="width:auto;margin-right:6px;" />
           Sistema Hop-Up
         </label>
       </div>

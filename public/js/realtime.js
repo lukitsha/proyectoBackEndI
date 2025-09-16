@@ -84,7 +84,7 @@ function wireCreateForm() {
   });
 }
 
-/* ------------------ Submit: Eliminar ------------------ */
+/* ------------------ Submit: Eliminar CON SWEETALERT2 ------------------ */
 function wireDeleteForm() {
   const form = document.getElementById('ws-delete-form');
   if (!form) return;
@@ -92,11 +92,46 @@ function wireDeleteForm() {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const id = (form.id || form.deleteId || {}).value || document.getElementById('deleteId')?.value;
-    if (!id) { showToast('Ingresá un ID', 'error'); return; }
+    if (!id) { 
+      showToast('Ingresá un ID', 'error'); 
+      return; 
+    }
+
+    // SWEETALERT2 para confirmación del formulario
+    const result = await Swal.fire({
+      title: '¿Estás seguro?',
+      text: `Vas a eliminar el producto con ID: ${id}`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#dc2626',
+      cancelButtonColor: '#404040',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      background: '#2d2d2d',
+      color: '#e5e5e5',
+      customClass: {
+        popup: 'swal-dark-popup',
+        confirmButton: 'swal-confirm-btn',
+        cancelButton: 'swal-cancel-btn'
+      }
+    });
+
+    if (!result.isConfirmed) return;
 
     try {
       await fetchJSON(`/api/products/${encodeURIComponent(id)}`, { method: 'DELETE' });
-      showToast('🗑️ Producto eliminado exitosamente!', 'success');
+      
+      // SweetAlert2 de éxito
+      Swal.fire({
+        title: '¡Eliminado!',
+        text: 'El producto ha sido eliminado exitosamente',
+        icon: 'success',
+        timer: 2000,
+        showConfirmButton: false,
+        background: '#2d2d2d',
+        color: '#e5e5e5'
+      });
+      
       form.reset();
       await loadAndRenderProducts();
     } catch (err) {
@@ -322,7 +357,7 @@ window.renderProducts = function renderProducts(products){
   list.innerHTML = html;
 };
 
-/* ------------------ Eliminar producto MEJORADO con auto-fill ------------------ */
+/* ------------------ Eliminar producto CON SWEETALERT2 ------------------ */
 window.deleteProduct = async function deleteProduct(id){
   if (!id) return;
   
@@ -330,11 +365,8 @@ window.deleteProduct = async function deleteProduct(id){
   const deleteInput = document.getElementById('deleteId');
   if (deleteInput) {
     deleteInput.value = id;
-    // Highlight temporal del input
     deleteInput.style.border = '2px solid #dc2626';
     deleteInput.style.boxShadow = '0 0 10px rgba(220, 38, 38, 0.5)';
-    
-    // Scroll al formulario de eliminar
     deleteInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
     
     setTimeout(() => {
@@ -343,15 +375,55 @@ window.deleteProduct = async function deleteProduct(id){
     }, 1500);
   }
   
-  // Confirmación mejorada
-  if (!confirm(`¿Estás seguro de eliminar el producto con ID:\n${id}?`)) return;
+  // Obtener el título del producto para mostrarlo en la confirmación
+  const card = document.querySelector(`[data-product-id="${id}"]`);
+  const title = card ? card.querySelector('.title')?.textContent : 'Sin título';
+  
+  // SWEETALERT2 para confirmación desde la card
+  const result = await Swal.fire({
+    title: '¿Estás seguro?',
+    text: `Vas a eliminar "${title}" (ID: ${id})`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#dc2626',
+    cancelButtonColor: '#404040',
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar',
+    background: '#2d2d2d',
+    color: '#e5e5e5',
+    customClass: {
+      popup: 'swal-dark-popup',
+      confirmButton: 'swal-confirm-btn',
+      cancelButton: 'swal-cancel-btn'
+    }
+  });
+
+  if (!result.isConfirmed) return;
   
   try {
     await fetchJSON(`/api/products/${encodeURIComponent(id)}`, { method: 'DELETE' });
-    showToast('🗑️ Producto eliminado exitosamente!', 'success');
+    
+    // SweetAlert2 de éxito con el nombre del producto
+    Swal.fire({
+      title: '¡Eliminado!',
+      text: `"${title}" ha sido eliminado exitosamente`,
+      icon: 'success',
+      timer: 2000,
+      showConfirmButton: false,
+      background: '#2d2d2d',
+      color: '#e5e5e5'
+    });
+    
     await loadAndRenderProducts();
   } catch (err) {
-    showToast(`No se pudo eliminar: ${err.message}`, 'error');
+    Swal.fire({
+      title: 'Error',
+      text: `No se pudo eliminar: ${err.message}`,
+      icon: 'error',
+      confirmButtonColor: '#dc2626',
+      background: '#2d2d2d',
+      color: '#e5e5e5'
+    });
   }
 };
 
