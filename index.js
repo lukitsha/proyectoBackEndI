@@ -1,10 +1,17 @@
 // index.js
+require('dotenv').config();
+
 const http = require('http');
 const app = require('./app');
-// Seed manual opcional
+
+// Seed manual (opcional; lo dejo para recordar que existe esta opcion si no tenemos DB)
 const { initializeIfEmpty } = require('./scripts/seed');
 
+// Mongo connection helper
+const connect = require('./config/db');
+
 const PORT = process.env.PORT || 8080;
+const USE_MONGO = String(process.env.PERSISTENCE || '').toLowerCase() === 'mongo';
 
 // Permite habilitar la inicialización sólo si lo pedimos por env
 const INIT_ON_START = String(process.env.INIT_DATA_ON_STARTUP || 'false').toLowerCase() === 'true';
@@ -99,27 +106,38 @@ io.on('connection', (socket) => {
 server.listen(PORT, async () => {
   // Limpiar consola para mejor presentación
   console.clear();
-  
+
   console.log('\n' + '='.repeat(70));
   console.log('🎯 AIRSOFT E-COMMERCE API - SERVIDOR INICIADO');
   console.log('='.repeat(70));
-  
+
   console.log(`\n📍 Puerto: ${PORT}`);
   console.log(`🌐 URL Base: http://localhost:${PORT}`);
-  
+  console.log(`🗄️  Persistencia: ${USE_MONGO ? 'MongoDB Atlas' : 'FileSystem'}`);
+
+  // Conexión a Mongo si corresponde
+  if (USE_MONGO) {
+    try {
+      await connect(process.env.MONGO_URI);
+    } catch (err) {
+      console.error('❌ Error de conexión a Mongo:', err?.message || err);
+      process.exit(1);
+    }
+  }
+
   console.log('\n' + '-'.repeat(70));
   console.log('📄 VISTAS DISPONIBLES:');
   console.log('-'.repeat(70));
   console.log(`  🏠 Home (Catálogo):        http://localhost:${PORT}/`);
   console.log(`  ⚡ Tiempo Real (WebSocket): http://localhost:${PORT}/realtimeproducts`);
-  
+
   console.log('\n' + '-'.repeat(70));
   console.log('🔌 ENDPOINTS API:');
   console.log('-'.repeat(70));
   console.log(`  📦 Productos:              http://localhost:${PORT}/api/products`);
   console.log(`  🛒 Carritos:               http://localhost:${PORT}/api/carts`);
   console.log(`  📊 API Info:               http://localhost:${PORT}/api`);
-  
+
   console.log('\n' + '-'.repeat(70));
   console.log('⚙️  COMANDOS ÚTILES:');
   console.log('-'.repeat(70));
@@ -127,8 +145,6 @@ server.listen(PORT, async () => {
   console.log('  npm run reseed → Reinicializar datos (sobrescribir)');
   console.log('  rs + Enter     → Reiniciar servidor (nodemon)');
   console.log('  Ctrl + C       → Detener servidor');
-  
-  console.log('\n' + '='.repeat(70));
 
   if (INIT_ON_START) {
     console.log('\n🌱 Inicializando datos de ejemplo...');
@@ -139,9 +155,9 @@ server.listen(PORT, async () => {
       console.error('❌ Error al inicializar datos:', err?.message || err);
     }
   } else {
-    console.log('\n💡 Tip: Ejecutá `npm run seed` para cargar datos de ejemplo.');
+    console.log('\n💡 Tip: ejecutá `npm run seed` si querés cargar datos de ejemplo (opcional).');
   }
-  
+
   console.log('\n✅ Servidor listo y escuchando...\n');
 });
 
@@ -150,7 +166,7 @@ server.on('error', (error) => {
   console.error('\n❌ Error del servidor:', error.message);
   if (error.code === 'EADDRINUSE') {
     console.error(`   El puerto ${PORT} ya está en uso.`);
-    console.error('   Solución: lsof -i :${PORT} && kill -9 <PID>\n');
+    console.error(`   Solución: lsof -i :${PORT} && kill -9 <PID>\n`);
   }
   process.exit(1);
 });

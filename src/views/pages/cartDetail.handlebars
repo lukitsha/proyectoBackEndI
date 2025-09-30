@@ -1,0 +1,76 @@
+<style>
+  .cart-container{background:#2d2d2d;border-radius:12px;padding:35px;box-shadow:0 10px 40px rgba(0,0,0,.3)}
+  .page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;padding-bottom:18px;border-bottom:2px solid #404040}
+  .page-title{font-size:1.8rem;color:#e5e5e5;display:flex;align-items:center;gap:12px}
+  .cart-info{background:#1a1a1a;border:1px solid #404040;border-radius:8px;padding:12px 18px;color:#a3a3a3;font-size:.9rem;margin-bottom:20px}
+  
+  .grid{display:grid;grid-template-columns:1fr;gap:16px}
+  .item{background:#1a1a1a;border:1px solid #404040;border-radius:10px;padding:18px;display:flex;gap:16px;align-items:center}
+  .item .thumb{width:120px;flex-shrink:0;border-radius:8px;background:#fff;display:flex;align-items:center;justify-content:center;border:1px solid #e5e5e5;overflow:hidden}
+  .item .thumb img{width:100%;height:100%;object-fit:contain}
+  
+  .item-details{flex:1}
+  .item-title{color:#e5e5e5;font-weight:700;font-size:1.05rem;margin-bottom:6px}
+  .item-desc{color:#a3a3a3;font-size:.9rem;margin-bottom:10px}
+  .item-qty{font-size:.85rem;color:#e5e5e5;margin-top:4px}
+  .item-price{color:#dc2626;font-weight:900;font-size:1rem}
+  .item-subtotal{color:#fff;font-weight:600;font-size:.9rem;margin-top:6px}
+  
+  .cart-summary{margin-top:28px;padding:20px;background:#1a1a1a;border:1px solid #404040;border-radius:10px;text-align:right}
+  .cart-summary h3{color:#e5e5e5;font-size:1.2rem;margin-bottom:10px}
+  .cart-summary .line{color:#a3a3a3;margin:4px 0}
+  .cart-summary .total{font-size:1.4rem;font-weight:900;color:#dc2626;margin-top:12px}
+  
+  .actions{margin-top:20px;display:flex;justify-content:space-between;align-items:center}
+  .btn{display:inline-block;background:#dc2626;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;transition:.25s}
+  .btn:hover{background:#b91c1c;transform:translateY(-2px)}
+</style>
+
+<div class="cart-container">
+  <div class="page-header">
+    <h1 class="page-title"><span>🛒</span> Carrito</h1>
+    <span class="cart-id">ID: {{cart._id}}</span>
+  </div>
+
+  <div class="cart-info">
+    <p><strong>Creado:</strong> {{cart.createdAt}}</p>
+    <p><strong>Última actualización:</strong> {{cart.updatedAt}}</p>
+  </div>
+
+  {{#if cart.products.length}}
+    <div class="grid">
+      {{#each cart.products}}
+        <div class="item">
+          <div class="thumb">
+            {{#if this.product.thumbnails.[0]}}
+              <img src="{{this.product.thumbnails.[0]}}" alt="{{this.product.title}}">
+            {{else}}
+              <div style="font-size:2rem;color:#525252">🎯</div>
+            {{/if}}
+          </div>
+          <div class="item-details">
+            <h3 class="item-title">{{this.product.title}}</h3>
+            <p class="item-desc">{{this.product.description}}</p>
+            <p class="item-qty">Cantidad: {{this.quantity}}</p>
+            <p class="item-price">Precio unitario: ${{this.product.price}}</p>
+            <p class="item-subtotal">Subtotal: ${{multiply this.quantity this.product.price}}</p>
+          </div>
+        </div>
+      {{/each}}
+    </div>
+
+    <div class="cart-summary">
+      <h3>Resumen del carrito</h3>
+      <p class="line">Total de productos: {{summary.totalProducts}}</p>
+      <p class="line">Monto total: </p>
+      <p class="total">${{summary.totalAmount}}</p>
+    </div>
+  {{else}}
+    <div class="empty">Tu carrito está vacío.</div>
+  {{/if}}
+
+  <div class="actions">
+    <a href="/products" class="btn">⬅️ Volver al Catálogo</a>
+    <a href="#" class="btn">💳 Finalizar Compra</a>
+  </div>
+</div>

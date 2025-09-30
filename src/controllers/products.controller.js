@@ -2,25 +2,19 @@
 const productsService = require('../services/products.service');
 
 class ProductsController {
-
+  // GET /api/products
   async getAllProducts(req, res, next) {
     try {
-      const result = await productsService.getAllProducts(req.query);
-      
-      // Si el resultado incluye paginación, enviar metadata
-      if (result.products && result.pagination) {
-        res.json({
-          status: 'success',
-          data: result.products,
-          pagination: result.pagination
-        });
-      } else {
-        // Resultado simple sin paginación
-        res.json({
-          status: 'success',
-          data: result
-        });
-      }
+      const { limit, page, sort, ...rest } = req.query;
+      const result = await productsService.listWithPagination({
+        limit,
+        page,
+        sort,
+        query: rest,
+        baseUrl: process.env.BASE_URL || `http://localhost:${process.env.PORT || 8080}`
+      });
+
+      res.json(result);
     } catch (error) {
       next(error);
     }
@@ -29,7 +23,6 @@ class ProductsController {
   async getProductById(req, res, next) {
     try {
       const product = await productsService.getProductById(req.params.pid);
-      
       res.json({
         status: 'success',
         data: product
@@ -46,7 +39,7 @@ class ProductsController {
       // 🔔 Notificar a todos los clientes conectados (Realtime)
       const io = req.app.get('io');
       if (io) io.emit('products:changed');
-      
+
       res.status(201).json({
         status: 'success',
         message: 'Producto creado exitosamente',
@@ -64,7 +57,7 @@ class ProductsController {
       // 🔔 (Recomendado) notificar también en updates
       const io = req.app.get('io');
       if (io) io.emit('products:changed');
-      
+
       res.json({
         status: 'success',
         message: 'Producto actualizado exitosamente',
@@ -82,7 +75,7 @@ class ProductsController {
       // 🔔 Notificar a todos los clientes conectados (Realtime)
       const io = req.app.get('io');
       if (io) io.emit('products:changed');
-      
+
       res.json({
         status: 'success',
         message: 'Producto eliminado exitosamente',

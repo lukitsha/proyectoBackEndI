@@ -28,6 +28,7 @@ app.engine('handlebars', exphbs.engine({
     eq: (a, b) => a === b,
     lte: (a, b) => Number(a) <= Number(b),
     typeof: (v) => typeof v,
+    multiply: (a, b) => Number(a) * Number(b), // ✅ Nuevo helper
   },
 }));
 app.set('view engine', 'handlebars');

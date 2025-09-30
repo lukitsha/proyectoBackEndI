@@ -1,15 +1,50 @@
-const crypto = require('crypto');
-const productsDAO = require('../dao/products.dao');
 const { VALID_CATEGORIES, PAGINATION, FILTERS } = require('../../config/config');
+const { ProductsDAO } = require('../dao/factory'); // <- usa factory (FS ↔ Mongo)
+const useMongo = String(process.env.PERSISTENCE || '').toLowerCase() === 'mongo';
 
 class ProductsService {
-  // ------------- Helpers de unicidad y validación -------------------
+  constructor() {
+    this.productsDAO = new ProductsDAO();
+  }
 
+  // ---------- helpers de compatibilidad (FS/Mongo) ----------
+  async _daoGetAll() {
+    if (typeof this.productsDAO.getAll === 'function') return this.productsDAO.getAll();
+    if (typeof this.productsDAO.getAllProducts === 'function') return this.productsDAO.getAllProducts();
+    return [];
+  }
+
+  async _daoGetById(id) {
+    if (typeof this.productsDAO.getById === 'function') return this.productsDAO.getById(id);
+    if (typeof this.productsDAO.getProductById === 'function') return this.productsDAO.getProductById(id);
+    return null;
+  }
+
+  async _daoCreate(data) {
+    if (typeof this.productsDAO.create === 'function') return this.productsDAO.create(data);
+    if (typeof this.productsDAO.createProduct === 'function') return this.productsDAO.createProduct(data);
+    throw new Error('DAO no soporta create');
+  }
+
+  async _daoUpdate(id, data) {
+    if (typeof this.productsDAO.update === 'function') return this.productsDAO.update(id, data);
+    if (typeof this.productsDAO.updateProduct === 'function') return this.productsDAO.updateProduct(id, data);
+    throw new Error('DAO no soporta update');
+  }
+
+  async _daoDelete(id) {
+    if (typeof this.productsDAO.delete === 'function') return this.productsDAO.delete(id);
+    if (typeof this.productsDAO.deleteProduct === 'function') return this.productsDAO.deleteProduct(id);
+    throw new Error('DAO no soporta delete');
+  }
+
+  // ------------- Helpers de unicidad y validación -------------------
   async assertUniqueCode(code, excludeId = null) {
-    const all = await productsDAO.getAllProducts();
-    const clash = all.find(
-      (p) => p.code === code && String(p.id) !== String(excludeId)
-    );
+    const all = await this._daoGetAll();
+    const clash = all.find((p) => {
+      const pid = String(p._id || p.id);
+      return p.code === code && pid !== String(excludeId || '');
+    });
     if (clash) {
       const err = new Error(`El code '${code}' ya existe`);
       err.statusCode = 409;
@@ -70,7 +105,7 @@ class ProductsService {
       }
     }
 
-    // status BOOLEAN (la consigna lo pide booleano)
+    // status BOOLEAN
     if (!isUpdate || productData.status !== undefined) {
       if (typeof productData.status !== 'boolean') {
         errors.push('Status debe ser boolean (true/false)');
@@ -85,7 +120,7 @@ class ProductsService {
         !Number.isInteger(productData.stock) ||
         productData.stock < 0
       ) {
-        errors.push('Stock debe ser un entero mayor o igual a 0');
+        errors.push('Stock debe ser un entero ≥ 0');
       }
     }
 
@@ -99,7 +134,7 @@ class ProductsService {
       }
     }
 
-    // Validaciones específicas por categoría (tu modelo usa "specs")
+    // Validaciones específicas por categoría (usa specs)
     this.validateCategorySpecificFields(productData, errors, isUpdate);
 
     if (errors.length > 0) {
@@ -126,7 +161,6 @@ class ProductsService {
         this.validateBatteryFields(productData, errors, isUpdate);
         break;
       default:
-        // si no hay category (en update parcial), no validamos específicos
         break;
     }
   }
@@ -139,21 +173,11 @@ class ProductsService {
       }
       const { caliber, weight, length, firingMode, hopUp } = data.specs;
 
-      if (!caliber || typeof caliber !== 'string') {
-        errors.push('Specs.caliber es requerido para réplicas');
-      }
-      if (weight === undefined || typeof weight !== 'number' || weight <= 0) {
-        errors.push('Specs.weight debe ser un número mayor a 0');
-      }
-      if (length === undefined || typeof length !== 'number' || length <= 0) {
-        errors.push('Specs.length debe ser un número mayor a 0');
-      }
-      if (!firingMode || typeof firingMode !== 'string') {
-        errors.push('Specs.firingMode es requerido para réplicas');
-      }
-      if (typeof hopUp !== 'boolean') {
-        errors.push('Specs.hopUp debe ser boolean');
-      }
+      if (!caliber || typeof caliber !== 'string') errors.push('Specs.caliber es requerido');
+      if (weight === undefined || typeof weight !== 'number' || weight <= 0) errors.push('Specs.weight > 0');
+      if (length === undefined || typeof length !== 'number' || length <= 0) errors.push('Specs.length > 0');
+      if (!firingMode || typeof firingMode !== 'string') errors.push('Specs.firingMode es requerido');
+      if (typeof hopUp !== 'boolean') errors.push('Specs.hopUp debe ser boolean');
     }
   }
 
@@ -165,15 +189,9 @@ class ProductsService {
       }
       const { capacity, compatibility, material } = data.specs;
 
-      if (capacity === undefined || typeof capacity !== 'number' || capacity <= 0) {
-        errors.push('Specs.capacity debe ser un número mayor a 0');
-      }
-      if (!compatibility || !Array.isArray(compatibility) || compatibility.length === 0) {
-        errors.push('Specs.compatibility debe ser un array no vacío');
-      }
-      if (!material || typeof material !== 'string') {
-        errors.push('Specs.material es requerido para cargadores');
-      }
+      if (capacity === undefined || typeof capacity !== 'number' || capacity <= 0) errors.push('Specs.capacity > 0');
+      if (!compatibility || !Array.isArray(compatibility) || compatibility.length === 0) errors.push('Specs.compatibility array no vacío');
+      if (!material || typeof material !== 'string') errors.push('Specs.material es requerido');
     }
   }
 
@@ -185,18 +203,10 @@ class ProductsService {
       }
       const { weight, diameter, quantity, material } = data.specs;
 
-      if (weight === undefined || typeof weight !== 'number' || weight <= 0) {
-        errors.push('Specs.weight debe ser un número mayor a 0');
-      }
-      if (diameter === undefined || typeof diameter !== 'number' || diameter <= 0) {
-        errors.push('Specs.diameter debe ser un número mayor a 0');
-      }
-      if (quantity === undefined || typeof quantity !== 'number' || quantity <= 0) {
-        errors.push('Specs.quantity debe ser un número mayor a 0');
-      }
-      if (!material || typeof material !== 'string') {
-        errors.push('Specs.material es requerido para BBs');
-      }
+      if (weight === undefined || typeof weight !== 'number' || weight <= 0) errors.push('Specs.weight > 0');
+      if (diameter === undefined || typeof diameter !== 'number' || diameter <= 0) errors.push('Specs.diameter > 0');
+      if (quantity === undefined || typeof quantity !== 'number' || quantity <= 0) errors.push('Specs.quantity > 0');
+      if (!material || typeof material !== 'string') errors.push('Specs.material es requerido');
     }
   }
 
@@ -208,60 +218,45 @@ class ProductsService {
       }
       const { voltage, capacity, chemistry, connector } = data.specs;
 
-      if (voltage === undefined || typeof voltage !== 'number' || voltage <= 0) {
-        errors.push('Specs.voltage debe ser un número mayor a 0');
-      }
-      if (capacity === undefined || typeof capacity !== 'number' || capacity <= 0) {
-        errors.push('Specs.capacity debe ser un número mayor a 0');
-      }
-      if (!chemistry || typeof chemistry !== 'string') {
-        errors.push('Specs.chemistry es requerido para baterías');
-      }
-      if (!connector || typeof connector !== 'string') {
-        errors.push('Specs.connector es requerido para baterías');
-      }
+      if (voltage === undefined || typeof voltage !== 'number' || voltage <= 0) errors.push('Specs.voltage > 0');
+      if (capacity === undefined || typeof capacity !== 'number' || capacity <= 0) errors.push('Specs.capacity > 0');
+      if (!chemistry || typeof chemistry !== 'string') errors.push('Specs.chemistry es requerido');
+      if (!connector || typeof connector !== 'string') errors.push('Specs.connector es requerido');
     }
   }
 
-  // --- Filtros / paginación ----------------------------------------
-
+  // ---------- filtros/paginación (para FS legacy) ----------
   validateFilters(filters) {
-    const validatedFilters = {};
+    const validated = {};
 
     if (filters.category && VALID_CATEGORIES.includes(filters.category)) {
-      validatedFilters.category = filters.category;
+      validated.category = filters.category;
     }
 
-    // status booleano: aceptar "true"/"false" (string) o boolean directo
     if (filters.status !== undefined) {
-      if (typeof filters.status === 'boolean') {
-        validatedFilters.status = filters.status;
-      } else if (typeof filters.status === 'string') {
+      if (typeof filters.status === 'boolean') validated.status = filters.status;
+      else if (typeof filters.status === 'string') {
         const v = filters.status.toLowerCase();
-        if (v === 'true') validatedFilters.status = true;
-        if (v === 'false') validatedFilters.status = false;
+        if (v === 'true') validated.status = true;
+        if (v === 'false') validated.status = false;
       }
     }
 
     if (filters.minPrice !== undefined) {
       const minPrice = parseFloat(filters.minPrice);
-      if (!isNaN(minPrice) && minPrice >= 0) {
-        validatedFilters.minPrice = minPrice;
-      }
+      if (!isNaN(minPrice) && minPrice >= 0) validated.minPrice = minPrice;
     }
 
     if (filters.maxPrice !== undefined) {
       const maxPrice = parseFloat(filters.maxPrice);
-      if (!isNaN(maxPrice) && maxPrice >= 0) {
-        validatedFilters.maxPrice = maxPrice;
-      }
+      if (!isNaN(maxPrice) && maxPrice >= 0) validated.maxPrice = maxPrice;
     }
 
     if (filters.query && typeof filters.query === 'string') {
-      validatedFilters.query = filters.query.trim();
+      validated.query = filters.query.trim();
     }
 
-    return validatedFilters;
+    return validated;
   }
 
   validatePagination(query) {
@@ -284,12 +279,11 @@ class ProductsService {
   }
 
   applyPagination(products, pagination) {
-    // Ordenamiento
+    // Ordenamiento manual (FS)
     products.sort((a, b) => {
       let aVal = a[pagination.sort];
       let bVal = b[pagination.sort];
 
-      // Manejo especial para fechas
       if (pagination.sort === 'createdAt') {
         aVal = new Date(aVal);
         bVal = new Date(bVal);
@@ -302,7 +296,6 @@ class ProductsService {
       }
     });
 
-    // Paginación
     const startIndex = (pagination.page - 1) * pagination.limit;
     const endIndex = startIndex + pagination.limit;
     const paginatedProducts = products.slice(startIndex, endIndex);
@@ -320,140 +313,191 @@ class ProductsService {
     };
   }
 
-  // --- Casos de uso -------------------------------------------------
+  // ---------- NUEVO: listado con formato de la rúbrica ----------
+  async listWithPagination({ limit = 10, page = 1, sort, query = {}, baseUrl }) {
+    // Normalizar sort a asc/desc por precio (consigna)
+    const priceSort = sort === 'asc' || sort === 'desc' ? sort : undefined;
 
-  async getAllProducts(query = {}) {
-    try {
-      const filters = this.validateFilters(query);
-      const products = await productsDAO.searchProducts(filters);
+    // Normalizar query permitido por consigna
+    const normalizedQuery = {
+      category: query.category,
+      status: (query.status === 'true') ? true : (query.status === 'false') ? false : undefined,
+      text: query.q || query.text || query.query
+    };
 
-      if (!query.limit && !query.page && !query.sort) {
-        return products;
-      }
+    if (useMongo && typeof this.productsDAO.paginate === 'function') {
+      // --- Mongo con mongoose-paginate-v2 ---
+      const result = await this.productsDAO.paginate({
+        page: Number(page) || 1,
+        limit: Number(limit) || 10,
+        sort: priceSort,
+        query: normalizedQuery
+      });
 
-      const pagination = this.validatePagination(query);
-      return this.applyPagination(products, pagination);
-    } catch (error) {
-      console.error('Error en getAllProducts:', error);
-      throw error;
+      const { docs, totalPages, page: cur, prevPage, nextPage, hasPrevPage, hasNextPage } = result;
+
+      const mkLink = (p) => p ? `${baseUrl}/api/products?` + new URLSearchParams({
+        page: p,
+        limit: Number(limit) || 10,
+        sort: priceSort || '',
+        category: normalizedQuery.category || '',
+        status: normalizedQuery.status === undefined ? '' : String(normalizedQuery.status),
+        q: normalizedQuery.text || ''
+      }).toString() : null;
+
+      return {
+        status: 'success',
+        payload: docs,
+        totalPages,
+        prevPage,
+        nextPage,
+        page: cur,
+        hasPrevPage,
+        hasNextPage,
+        prevLink: mkLink(prevPage),
+        nextLink: mkLink(nextPage)
+      };
     }
+
+    // --- Modo FS (legacy): respeta tu lógica previa y adapta formato ---
+    const filters = this.validateFilters({
+      category: query.category,
+      status: query.status,
+      query: normalizedQuery.text
+    });
+    const all = await (this.productsDAO.searchProducts
+      ? this.productsDAO.searchProducts(filters)
+      : this._daoGetAll());
+
+    const pagination = this.validatePagination({
+      limit: String(limit),
+      page: String(page),
+      sort: 'price',            // consigna: ordenar por price
+      order: priceSort || 'asc' // si no mandan sort, default sin orden — acá usamos asc para determinismo
+    });
+
+    const { products, pagination: meta } = this.applyPagination(all, pagination);
+
+    const mkLink = (p) => p ? `${baseUrl}/api/products?` + new URLSearchParams({
+      page: p,
+      limit: pagination.limit,
+      sort: priceSort || '',
+      category: filters.category || '',
+      status: (filters.status === undefined) ? '' : String(filters.status),
+      q: filters.query || ''
+    }).toString() : null;
+
+    return {
+      status: 'success',
+      payload: products,
+      totalPages: meta.pages,
+      prevPage: meta.hasPrev ? meta.page - 1 : null,
+      nextPage: meta.hasNext ? meta.page + 1 : null,
+      page: meta.page,
+      hasPrevPage: meta.hasPrev,
+      hasNextPage: meta.hasNext,
+      prevLink: mkLink(meta.hasPrev ? meta.page - 1 : null),
+      nextLink: mkLink(meta.hasNext ? meta.page + 1 : null)
+    };
+  }
+
+  // ---------- Casos de uso (compatibles con tus websockets) ----------
+  async getAllProducts(query = {}) {
+    // Usado por WS para listar
+    if (useMongo) {
+      // listar sin paginado (todos)
+      if (typeof this.productsDAO.getAll === 'function') {
+        return this.productsDAO.getAll();
+      }
+    }
+    // FS legacy
+    const filters = this.validateFilters(query);
+    const products = this.productsDAO.searchProducts
+      ? await this.productsDAO.searchProducts(filters)
+      : await this._daoGetAll();
+
+    if (!query.limit && !query.page && !query.sort) {
+      return products;
+    }
+
+    const pagination = this.validatePagination(query);
+    return this.applyPagination(products, pagination);
   }
 
   async getProductById(id) {
-    try {
-      if (!id) {
-        const error = new Error('ID de producto es requerido');
-        error.statusCode = 400;
-        throw error;
-      }
-
-      const product = await productsDAO.getProductById(String(id));
-
-      if (!product) {
-        const error = new Error(`Producto con ID ${id} no encontrado`);
-        error.statusCode = 404;
-        throw error;
-      }
-
-      return product;
-    } catch (error) {
-      console.error('Error en getProductById:', error);
+    if (!id) {
+      const error = new Error('ID de producto es requerido');
+      error.statusCode = 400;
       throw error;
     }
+    const product = await this._daoGetById(String(id));
+    if (!product) {
+      const error = new Error(`Producto con ID ${id} no encontrado`);
+      error.statusCode = 404;
+      throw error;
+    }
+    return product;
   }
 
   async createProduct(productData) {
-    try {
-      // Completar defaults antes de validar
-      const payload = {
-        thumbnails: [],
-        status: true, // default boolean
-        ...productData,
-      };
+    const payload = { thumbnails: [], status: true, ...productData };
+    this.validateProductData(payload);
 
-      // Validar datos
-      this.validateProductData(payload);
+    // Unicidad de code (además del índice unique en Mongo)
+    await this.assertUniqueCode(payload.code);
 
-      // Unicidad de code
-      await this.assertUniqueCode(payload.code);
-
-      // Crear producto
-      const newProduct = {
-        id: crypto.randomUUID(),
-        ...payload,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-
-      return await productsDAO.createProduct(newProduct);
-    } catch (error) {
-      console.error('Error en createProduct:', error);
-      throw error;
-    }
+    // En Mongo, el _id lo genera la DB; en FS quedaba tu id manual
+    return this._daoCreate({
+      ...payload,
+      ...(useMongo ? {} : { createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() })
+    });
   }
 
   async updateProduct(id, updateData) {
-    try {
-      if (!id) {
-        const error = new Error('ID de producto es requerido');
-        error.statusCode = 400;
-        throw error;
-      }
-
-      const existingProduct = await productsDAO.getProductById(String(id));
-      if (!existingProduct) {
-        const error = new Error(`Producto con ID ${id} no encontrado`);
-        error.statusCode = 404;
-        throw error;
-      }
-
-      // Evitar actualización del ID
-      const { id: _, ...dataToUpdate } = updateData;
-
-      if (Object.keys(dataToUpdate).length === 0) {
-        const error = new Error('No hay datos para actualizar');
-        error.statusCode = 400;
-        throw error;
-      }
-
-      // Validación parcial (update)
-      this.validateProductData(dataToUpdate, true);
-
-      // Si cambia el code, validar unicidad
-      if (dataToUpdate.code && dataToUpdate.code !== existingProduct.code) {
-        await this.assertUniqueCode(dataToUpdate.code, id);
-      }
-
-      dataToUpdate.updatedAt = new Date().toISOString();
-
-      return await productsDAO.updateProduct(String(id), dataToUpdate);
-    } catch (error) {
-      console.error('Error en updateProduct:', error);
+    if (!id) {
+      const error = new Error('ID de producto es requerido');
+      error.statusCode = 400;
       throw error;
     }
+
+    const existing = await this._daoGetById(String(id));
+    if (!existing) {
+      const error = new Error(`Producto con ID ${id} no encontrado`);
+      error.statusCode = 404;
+      throw error;
+    }
+
+    const { id: _omit, _id, ...dataToUpdate } = updateData;
+    if (Object.keys(dataToUpdate).length === 0) {
+      const error = new Error('No hay datos para actualizar');
+      error.statusCode = 400;
+      throw error;
+    }
+
+    this.validateProductData(dataToUpdate, true);
+
+    if (dataToUpdate.code && dataToUpdate.code !== existing.code) {
+      await this.assertUniqueCode(dataToUpdate.code, (existing._id || existing.id));
+    }
+
+    if (!useMongo) dataToUpdate.updatedAt = new Date().toISOString();
+
+    return this._daoUpdate(String(id), dataToUpdate);
   }
 
   async deleteProduct(id) {
-    try {
-      if (!id) {
-        const error = new Error('ID de producto es requerido');
-        error.statusCode = 400;
-        throw error;
-      }
-
-      const deleted = await productsDAO.deleteProduct(String(id));
-
-      if (!deleted) {
-        const error = new Error(`Producto con ID ${id} no encontrado`);
-        error.statusCode = 404;
-        throw error;
-      }
-
-      return deleted;
-    } catch (error) {
-      console.error('Error en deleteProduct:', error);
+    if (!id) {
+      const error = new Error('ID de producto es requerido');
+      error.statusCode = 400;
       throw error;
     }
+    const deleted = await this._daoDelete(String(id));
+    if (!deleted) {
+      const error = new Error(`Producto con ID ${id} no encontrado`);
+      error.statusCode = 404;
+      throw error;
+    }
+    return deleted;
   }
 }
 

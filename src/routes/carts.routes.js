@@ -1,27 +1,31 @@
+// src/routes/carts.routes.js
 const express = require('express');
 const cartsController = require('../controllers/carts.controller');
 
 const router = express.Router();
 
-// POST /api/carts - Crear nuevo carrito
+// Crear nuevo carrito
 router.post('/', cartsController.createCart);
 
-// GET /api/carts/:cid - Obtener productos del carrito
-router.get('/:cid', cartsController.getCartById);
+// GET con populate (trae productos completos)
+router.get('/:cid', cartsController.getCart);
 
-// GET /api/carts/:cid/summary - Obtener resumen del carrito con totales
+// Resumen del carrito
 router.get('/:cid/summary', cartsController.getCartSummary);
 
-// POST /api/carts/:cid/product/:pid - Agregar producto al carrito
+// Agregar producto al carrito
 router.post('/:cid/product/:pid', cartsController.addProductToCart);
 
-// DELETE /api/carts/:cid/product/:pid - Remover producto del carrito
-router.delete('/:cid/product/:pid', cartsController.removeProductFromCart);
+// Eliminar un producto del carrito
+router.delete('/:cid/products/:pid', cartsController.removeProduct);
 
-// PUT /api/carts/:cid/product/:pid - Actualizar cantidad de producto
-router.put('/:cid/product/:pid', cartsController.updateProductQuantity);
+// Reemplazar todos los productos del carrito
+router.put('/:cid', cartsController.replaceAll);
 
-// DELETE /api/carts/:cid - Eliminar carrito completo
-router.delete('/:cid', cartsController.deleteCart);
+// Actualizar SOLO la cantidad de un producto
+router.put('/:cid/products/:pid', cartsController.updateQuantity);
+
+// Vaciar el carrito (eliminar todos los productos)
+router.delete('/:cid', cartsController.clearCart);
 
 module.exports = router;

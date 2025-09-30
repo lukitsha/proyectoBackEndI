@@ -15,7 +15,7 @@
   .chip.badge{position:relative}
   .chip .count{background:#404040;color:#a3a3a3;border-radius:6px;font-size:.75rem;padding:2px 6px}
   
-  /* Categorías y tarjetas MEJORADAS */
+  /* Categorías y tarjetas */
   .cat-block{margin-top:22px}
   .cat-title{display:flex;align-items:center;gap:10px;color:#e5e5e5;font-size:1.2rem;margin-bottom:14px}
   .cat-badge{font-size:.75rem;background:#dc2626;color:#fff;border-radius:999px;padding:4px 10px}
@@ -82,7 +82,7 @@
   
   .cat{background:#dc2626;color:#fff;padding:3px 8px;border-radius:4px;font-size:.7rem;font-weight:700;text-transform:uppercase}
   
-  /* IMAGEN MAXIMIZADA CON FONDO BLANCO - IGUAL QUE REALTIME */
+  /* Imagen */
   .thumb{
     width:100%;
     aspect-ratio:16/9;
@@ -95,18 +95,8 @@
     overflow:hidden;
     border:1px solid #e5e5e5;
   }
-  
-  .thumb img{
-    width:100%;
-    height:100%;
-    object-fit:contain;
-    padding:0;
-  }
-  
-  /* Para el emoji cuando no hay imagen */
-  .thumb > div {
-    background:transparent !important;
-  }
+  .thumb img{width:100%;height:100%;object-fit:contain;padding:0}
+  .thumb > div {background:transparent !important}
   
   .title{font-size:1.05rem;color:#e5e5e5;font-weight:800;margin:6px 0 4px}
   .desc{color:#a3a3a3;font-size:.9rem;line-height:1.5;margin-bottom:12px}
@@ -121,17 +111,7 @@
     border-radius:6px;
     border:1px solid #2e2e2e;
   }
-  .spec{
-    display:inline-flex;
-    gap:4px;
-    align-items:center;
-    background:#1a1a1a;
-    border:1px solid #404040;
-    border-radius:6px;
-    padding:5px 8px;
-    color:#e5e5e5;
-    font-size:.8rem;
-  }
+  .spec{display:inline-flex;gap:4px;align-items:center;background:#1a1a1a;border:1px solid #404040;border-radius:6px;padding:5px 8px;color:#e5e5e5;font-size:.8rem}
   .spec strong{color:#dc2626;font-weight:600}
   
   .price{color:#dc2626;font-weight:900;font-size:1.2rem}
@@ -142,80 +122,157 @@
   .action-section{text-align:center;margin-top:34px;padding-top:24px;border-top:1px solid #404040}
   .btn{display:inline-block;background:#dc2626;color:#fff;padding:14px 30px;border-radius:8px;text-decoration:none;font-weight:700;transition:.25s;box-shadow:0 4px 15px rgba(220,38,38,.3)}
   .btn:hover{background:#b91c1c;transform:translateY(-2px);box-shadow:0 6px 20px rgba(220,38,38,.4)}
+
+  /* Paginación */
+  .pagination {display:flex;justify-content:center;gap:12px;margin-top:28px}
+  .pagination a, .pagination span {padding:10px 16px;border-radius:8px;font-weight:700;text-decoration:none}
+  .pagination a {background:#1a1a1a;border:1px solid #404040;color:#e5e5e5;transition:.2s}
+  .pagination a:hover {border-color:#dc2626;color:#fff;background:#dc2626}
+  .pagination span {background:#dc2626;border:1px solid #dc2626;color:#fff}
 </style>
 
 <div class="home-container">
   <div class="page-header">
     <h1 class="page-title"><span>📦</span> Catálogo de Productos</h1>
-    {{#if productsCount}}<span class="product-count">{{productsCount}} productos</span>{{/if}}
+
+    {{!-- Prioriza contador de página paginada; si no, usa productsCount del modo antiguo --}}
+    {{#if payload}}
+      <span class="product-count">{{payload.length}} en esta página</span>
+    {{else if productsCount}}
+      <span class="product-count">{{productsCount}} productos</span>
+    {{/if}}
   </div>
 
-  <!-- Botonera de filtros -->
-  <div class="filters">
-    <a href="/" class="chip total {{#if (eq filters.active 'all')}}active{{/if}}">
-      <span class="dot"></span> Todos
-      <span class="count">{{filters.total}}</span>
-    </a>
+  {{!-- ====== MODO ANTIGUO (agrupado por categoría) ====== --}}
+  {{#if productsByCategory}}
+    {{!-- Filtros solo si vienen en el contexto --}}
+    {{#if filters}}
+      <div class="filters">
+        <a href="/" class="chip total {{#if (eq filters.active 'all')}}active{{/if}}">
+          <span class="dot"></span> Todos
+          <span class="count">{{filters.total}}</span>
+        </a>
+        {{#each filters.categories}}
+          <a href="/?category={{this.key}}"
+             class="chip {{#if (eq ../filters.active this.key)}}active{{/if}}">
+            <span class="dot"></span> {{this.title}}
+            <span class="count">{{this.count}}</span>
+          </a>
+        {{/each}}
+      </div>
+    {{/if}}
 
-    {{#each filters.categories}}
-      <a href="/?category={{this.key}}"
-         class="chip {{#if (eq ../filters.active this.key)}}active{{/if}}">
-        <span class="dot"></span> {{this.title}}
-        <span class="count">{{this.count}}</span>
-      </a>
-    {{/each}}
-  </div>
+    {{#each productsByCategory}}
+      <section class="cat-block">
+        <h2 class="cat-title">
+          {{this.title}} <span class="cat-badge">{{this.items.length}}</span>
+        </h2>
 
-  {{#each productsByCategory}}
-    <section class="cat-block">
-      <h2 class="cat-title">
-        {{this.title}} <span class="cat-badge">{{this.items.length}}</span>
-      </h2>
+        {{#if this.items.length}}
+          <div class="grid">
+            {{#each this.items}}
+              <article class="card">
+                <div class="card-header">
+                  <span class="pid">ID: {{_id}}</span>
+                  <span class="cat">{{../badge}}</span>
+                </div>
 
-      {{#if this.items.length}}
-        <div class="grid">
-          {{#each this.items}}
-            <article class="card">
-              <div class="card-header">
-                <span class="pid">ID: {{_id}}</span>
-                <span class="cat">{{../badge}}</span>
-              </div>
+                <div class="card-content">
+                  <div class="thumb">
+                    {{#if thumbnails.[0]}}
+                      <img src="{{thumbnails.[0]}}" alt="{{title}}">
+                    {{else}} 
+                      <div style="font-size:2.2rem;color:#525252">🎯</div>
+                    {{/if}}
+                  </div>
 
-              <div class="card-content">
-                <div class="thumb">
-                  {{#if thumbnails.[0]}}
-                    <img src="{{thumbnails.[0]}}" alt="{{title}}">
-                  {{else}} 
-                    <div style="font-size:2.2rem;color:#525252">🎯</div>
+                  <h3 class="title">{{title}}</h3>
+                  <p class="desc">{{#if description}}{{description}}{{else}}Sin descripción{{/if}}</p>
+
+                  {{#if specs}}
+                    <div class="specs">
+                      {{#each specs}}
+                        <span class="spec"><strong>{{@key}}:</strong> {{this}}</span>
+                      {{/each}}
+                    </div>
                   {{/if}}
                 </div>
 
-                <h3 class="title">{{title}}</h3>
-                <p class="desc">{{#if description}}{{description}}{{else}}Sin descripción{{/if}}</p>
+                <div class="card-footer">
+                  <span class="price">${{price}}</span>
+                  <span class="stock {{#if (eq stock 0)}}out{{else}}{{#if (lte stock 10)}}low{{/if}}{{/if}}">
+                    Stock: {{stock}}
+                  </span>
+                </div>
+              </article>
+            {{/each}}
+          </div>
+        {{else}}
+          <div class="empty">No hay productos en esta categoría.</div>
+        {{/if}}
+      </section>
+    {{/each}}
+  {{/if}}
 
-                {{#if specs}}
-                  <div class="specs">
-                    {{#each specs}}
-                      <span class="spec"><strong>{{@key}}:</strong> {{this}}</span>
-                    {{/each}}
-                  </div>
-                {{/if}}
-              </div>
+  {{!-- ====== MODO NUEVO (paginado desde /api/products) ====== --}}
+  {{#if payload}}
+    <div class="grid">
+      {{#each payload}}
+        <article class="card">
+          <div class="card-header">
+            <span class="pid">ID: {{_id}}</span>
+            <span class="cat">{{category}}</span>
+          </div>
 
-              <div class="card-footer">
-                <span class="price">${{price}}</span>
-                <span class="stock {{#if (eq stock 0)}}out{{else}}{{#if (lte stock 10)}}low{{/if}}{{/if}}">
-                  Stock: {{stock}}
-                </span>
+          <div class="card-content">
+            <div class="thumb">
+              {{#if thumbnails.[0]}}
+                <img src="{{thumbnails.[0]}}" alt="{{title}}">
+              {{else}} 
+                <div style="font-size:2.2rem;color:#525252">🎯</div>
+              {{/if}}
+            </div>
+
+            <h3 class="title">{{title}}</h3>
+            <p class="desc">{{#if description}}{{description}}{{else}}Sin descripción{{/if}}</p>
+
+            {{#if specs}}
+              <div class="specs">
+                {{#each specs}}
+                  <span class="spec"><strong>{{@key}}:</strong> {{this}}</span>
+                {{/each}}
               </div>
-            </article>
-          {{/each}}
-        </div>
-      {{else}}
-        <div class="empty">No hay productos en esta categoría.</div>
+            {{/if}}
+          </div>
+
+          <div class="card-footer">
+            <span class="price">${{price}}</span>
+            <span class="stock {{#if (eq stock 0)}}out{{else}}{{#if (lte stock 10)}}low{{/if}}{{/if}}">
+              Stock: {{stock}}
+            </span>
+          </div>
+        </article>
+      {{/each}}
+    </div>
+
+    {{!-- Paginación --}}
+    <div class="pagination">
+      {{#if hasPrevPage}}
+        <a href="{{prevLink}}">« Anterior</a>
       {{/if}}
-    </section>
-  {{/each}}
+
+      <span>Página {{page}} / {{totalPages}}</span>
+
+      {{#if hasNextPage}}
+        <a href="{{nextLink}}">Siguiente »</a>
+      {{/if}}
+    </div>
+  {{else}}
+    {{!-- Si no hay payload ni productsByCategory --}}
+    {{#unless productsByCategory}}
+      <div class="empty">No hay productos disponibles.</div>
+    {{/unless}}
+  {{/if}}
 
   <div class="action-section">
     <p style="color:#737373;margin-bottom:20px">¿Querés gestionarlos en tiempo real?</p>

@@ -1,7 +1,7 @@
 # 🎯 Airsoft E-commerce API - LUCA GAIDO (BACKEND I)
 
-API REST y vistas dinámicas para un e-commerce de productos Airsoft desarrollada con **Node.js + Express + Handlebars + WebSockets**.  
-**Entrega #2 - CoderHouse Backend**
+API REST y vistas dinámicas para un e-commerce de productos Airsoft desarrollada con **Node.js + Express + Handlebars + WebSockets + MongoDB Atlas**.  
+**Entrega FINAL - CoderHouse Backend**
 
 ---
 
@@ -10,6 +10,7 @@ API REST y vistas dinámicas para un e-commerce de productos Airsoft desarrollad
 ### Prerrequisitos
 - Node.js 18+ 
 - npm
+- Cuenta gratuita en [MongoDB Atlas](https://www.mongodb.com/atlas)
 
 ### Instalación
 ```bash
@@ -20,7 +21,7 @@ cd airsoft-ecommerce-api
 # Instalar dependencias
 npm install
 
-# Configurar variables de entorno (opcional)
+# Configurar variables de entorno
 cp .env.example .env
 ```
 
@@ -32,10 +33,10 @@ npm run dev
 # Modo producción
 npm start
 
-# Inicializar datos de ejemplo
+# Inicializar datos de ejemplo (FS legacy)
 npm run seed
 
-# Reinicializar datos (sobrescribir)
+# Reinicializar datos (sobrescribir, FS legacy)
 npm run reseed
 ```
 
@@ -48,51 +49,62 @@ El servidor estará disponible en `http://localhost:8080`
 ```
 airsoft-ecommerce-api/
 ├── config/
-│   ├── config.js             # Configuraciones generales
-│   └── environment.js        # Variables de entorno
+│   ├── config.js               # Configuraciones generales
+│   ├── environment.js          # Variables de entorno
+│   └── db.js                   # Conexión a MongoDB (Atlas o local)
 ├── data/
-│   ├── products.json         # Persistencia de productos
-│   └── carts.json           # Persistencia de carritos
+│   ├── products.json           # Persistencia local de productos (FS legacy)
+│   └── carts.json              # Persistencia local de carritos (FS legacy)
 ├── public/
-│   ├── css/                 # Estilos estáticos
+│   ├── css/                    # Estilos estáticos
 │   └── js/
-│       └── realtime.js      # Cliente WebSocket
+│       └── realtime.js         # Cliente WebSocket
 ├── scripts/
-│   └── seed.js              # Script de inicialización de datos
+│   ├── seed.js                 # Script de inicialización de datos en FS
+│   └── migrate.fs.to.mongo.js  # Script opcional para migrar JSON a Mongo
 ├── src/
 │   ├── controllers/
-│   │   ├── carts.controller.js      # Controlador de carritos
-│   │   └── products.controller.js   # Controlador de productos
+│   │   ├── carts.controller.js     # Controlador de carritos (incluye endpoints extra)
+│   │   └── products.controller.js  # Controlador de productos (paginación/filtros)
 │   ├── dao/
-│   │   ├── carts.dao.js            # Acceso a datos de carritos
-│   │   └── products.dao.js         # Acceso a datos de productos
+│   │   ├── carts.dao.js            # DAO FileSystem para carritos
+│   │   ├── products.dao.js         # DAO FileSystem para productos
+│   │   ├── factory.js              # Factory para conmutar FS ↔ Mongo
+│   │   └── mongo/                  # DAOs para persistencia en Mongo
+│   │       ├── carts.mongo.dao.js
+│   │       └── products.mongo.dao.js
+│   ├── models/
+│   │   ├── cart.model.js           # Modelo Mongoose de carritos
+│   │   └── product.model.js        # Modelo Mongoose de productos
 │   ├── routes/
-│   │   ├── carts.routes.js         # Rutas API de carritos
-│   │   ├── products.routes.js      # Rutas API de productos
-│   │   └── views.router.js         # Rutas de vistas (home, realtime)
+│   │   ├── carts.routes.js         # Rutas API de carritos (incluye endpoints nuevos)
+│   │   ├── products.routes.js      # Rutas API de productos (paginación/filtros)
+│   │   └── views.router.js         # Rutas de vistas (home, realtime, carts/:cid)
 │   ├── services/
-│   │   ├── carts.service.js        # Lógica de negocio de carritos
-│   │   └── products.service.js     # Lógica de negocio de productos
+│   │   ├── carts.service.js        # Lógica de negocio de carritos (populate, qty, clear)
+│   │   └── products.service.js     # Lógica de negocio de productos (paginación/filtros)
 │   └── views/
 │       ├── errors/
-│       │   ├── 404.handlebars      # Vista de error 404
-│       │   └── 500.handlebars      # Vista de error 500
+│       │   ├── 404.handlebars       # Vista de error 404
+│       │   └── 500.handlebars       # Vista de error 500
 │       ├── layouts/
-│       │   └── main.handlebars     # Layout principal
+│       │   └── main.handlebars      # Layout principal
 │       ├── pages/
-│       │   ├── home.handlebars     # Vista home del catálogo
-│       │   └── realTimeProducts.handlebars  # Vista tiempo real
+│       │   ├── home.handlebars      # Vista home (con paginación)
+│       │   ├── realTimeProducts.handlebars  # Vista en tiempo real con WebSocket
+│       │   └── cartDetail.handlebars        # Vista detalle de carrito (populate)
 │       └── partials/
-│           ├── footer.handlebars   # Footer reutilizable
-│           ├── header.handlebars   # Header reutilizable
-│           └── navbar.handlebars   # Navbar reutilizable
-├── .env                     # Variables de entorno (no versionado)
-├── .gitignore              # Archivos ignorados por git
-├── app.js                  # Configuración de Express
-├── index.js                # Punto de entrada del servidor
-├── nodemon.json            # Configuración de nodemon
-├── package.json            # Dependencias y scripts
-└── README.md               # Documentación
+│           ├── footer.handlebars    # Footer reutilizable
+│           ├── header.handlebars    # Header reutilizable
+│           └── navbar.handlebars    # Navbar reutilizable
+├── .env                       # Variables de entorno (Mongo URI, persistencia, etc.)
+├── .env.example               # Plantilla de variables de entorno (subida al repo)
+├── .gitignore                 # Archivos ignorados por git
+├── app.js                     # Configuración base de Express y middlewares
+├── index.js                   # Punto de entrada del servidor (Express + WS + Mongo)
+├── nodemon.json               # Configuración de nodemon
+├── package.json               # Dependencias y scripts
+└── README.md                  # Documentación
 ```
 
 ---
@@ -121,7 +133,7 @@ airsoft-ecommerce-api/
 
 | Método | Endpoint | Descripción |
 |--------|----------|-------------|
-| GET | `/` | Lista todos los productos (con filtros opcionales) |
+| GET | `/` | Lista todos los productos (con filtros, paginación y ordenamiento) |
 | GET | `/:pid` | Obtiene producto por ID |
 | POST | `/` | Crea nuevo producto |
 | PUT | `/:pid` | Actualiza producto (excepto ID) |
@@ -129,32 +141,30 @@ airsoft-ecommerce-api/
 
 #### Filtros disponibles en GET `/api/products`:
 - `category`: Filtro por categoría (replicas, magazines, bbs, batteries)
-- `status`: Filtro por estado (active, inactive, discontinued) 
-- `minPrice`, `maxPrice`: Rango de precios
+- `status`: Filtro por estado (true/false) 
 - `query`: Búsqueda en título y descripción
 - `limit`, `page`: Paginación
-- `sort`, `order`: Ordenamiento
+- `sort`: Ordenamiento por precio (`asc`/`desc`)
 
 ### Carritos (`/api/carts`)
 
 | Método | Endpoint | Descripción |
 |--------|----------|-------------|
 | POST | `/` | Crea nuevo carrito |
-| GET | `/:cid` | Lista productos del carrito |
+| GET | `/:cid` | Lista productos del carrito (populate de productos) |
 | GET | `/:cid/summary` | Resumen del carrito con totales |
-| GET | `/:cid/details` | Detalles completos con información de productos |
 | POST | `/:cid/product/:pid` | Agrega producto al carrito |
-| PUT | `/:cid/product/:pid` | Actualiza cantidad de producto |
-| DELETE | `/:cid/product/:pid` | Remueve producto del carrito |
-| DELETE | `/:cid` | Elimina carrito completo |
+| PUT | `/:cid` | Reemplaza todos los productos del carrito |
+| PUT | `/:cid/products/:pid` | Actualiza cantidad de producto |
+| DELETE | `/:cid/products/:pid` | Remueve producto específico del carrito |
+| DELETE | `/:cid` | Vacía el carrito completo |
 
 ---
 
 ## 🖥️ Vistas Dinámicas
 
 ### Home (`/`)
-- Catálogo dividido por categorías con renderizado server-side
-- Filtro de productos por categoría mediante query params
+- Catálogo de productos con **paginación y filtros**
 - Productos con **imagen, especificaciones y estado de stock**
 - Indicadores visuales para stock bajo (≤10) o sin stock
 - Navegación intuitiva con Handlebars helpers personalizados
@@ -166,6 +176,11 @@ airsoft-ecommerce-api/
 - Formulario para **eliminar productos** con confirmación
 - Indicador de **usuarios conectados en vivo** actualizado en tiempo real
 - Sincronización automática entre todos los clientes conectados
+
+### Cart Detail (`/carts/:cid`)
+- Vista de un carrito individual con productos poblados desde MongoDB
+- Subtotales por producto y total general
+- Botones de acción (volver al catálogo, finalizar compra)
 
 ---
 
@@ -198,7 +213,7 @@ airsoft-ecommerce-api/
 - `price`: Precio mayor a 0  
 - `stock`: Stock ≥ 0  
 - `description`: Descripción (mínimo 10 caracteres)  
-- `status`: Estado del producto (active/inactive)
+- `status`: Estado del producto (true/false)
 - `thumbnails`: URLs de imágenes (array, opcional)
 
 ### Especificaciones por Categoría
@@ -233,9 +248,7 @@ airsoft-ecommerce-api/
 
 ### Crear Producto
 ```bash
-curl -X POST http://localhost:8080/api/products \
-  -H "Content-Type: application/json" \
-  -d '{
+curl -X POST http://localhost:8080/api/products   -H "Content-Type: application/json"   -d '{
     "title": "M4A1 Carbine Elite",
     "description": "Réplica M4A1 con sistema AEG de alta calidad",
     "code": "M4-ELITE-001",
@@ -259,9 +272,7 @@ curl -X POST http://localhost:8080/api/products \
 CART_ID=$(curl -s -X POST http://localhost:8080/api/carts | jq -r '.data.id')
 
 # Agregar producto
-curl -X POST http://localhost:8080/api/carts/$CART_ID/product/{productId} \
-  -H "Content-Type: application/json" \
-  -d '{"quantity": 2}'
+curl -X POST http://localhost:8080/api/carts/$CART_ID/product/{productId}   -H "Content-Type: application/json"   -d '{"quantity": 2}'
 
 # Ver resumen del carrito
 curl http://localhost:8080/api/carts/$CART_ID/summary
@@ -272,7 +283,7 @@ curl http://localhost:8080/api/carts/$CART_ID/summary
 ## 🎯 Características Técnicas
 
 ### Arquitectura en Capas
-- **DAO (Data Access Object)**: Manejo de persistencia en FileSystem
+- **DAO (Data Access Object)**: Manejo de persistencia en FileSystem y MongoDB
 - **Service**: Lógica de negocio y validaciones
 - **Controller**: Procesamiento de requests/responses
 - **Routes**: Definición de endpoints y middlewares
@@ -292,10 +303,9 @@ curl http://localhost:8080/api/carts/$CART_ID/summary
 - Respuestas HTTP consistentes con códigos apropiados
 
 ### Persistencia
-- FileSystem con archivos JSON
-- Operaciones atómicas de lectura/escritura
-- IDs únicos generados con `crypto.randomUUID()`
-- Respaldo automático antes de operaciones destructivas
+- **MongoDB Atlas** como persistencia principal (Entrega Final)
+- **FileSystem (FS legacy)** como persistencia alternativa seleccionable (para desarrollo o compatibilidad)
+- Factory para conmutar entre FS y Mongo con variable de entorno `PERSISTENCE`
 
 ---
 
@@ -303,8 +313,8 @@ curl http://localhost:8080/api/carts/$CART_ID/summary
 
 ### Con cURL
 ```bash
-# Listar productos con filtros
-curl "http://localhost:8080/api/products?category=replicas&limit=5"
+# Listar productos con filtros y paginación
+curl "http://localhost:8080/api/products?category=replicas&limit=5&page=1&sort=asc"
 
 # Búsqueda por texto
 curl "http://localhost:8080/api/products?query=tactical"
@@ -321,34 +331,23 @@ Abrir múltiples ventanas del navegador en `/realtimeproducts` para verificar si
 
 ---
 
-## ⚠️ Consideraciones y Limitaciones
-
-### FileSystem como Base de Datos
-- No apto para producción con alto volumen
-- Sin transacciones ACID
-- Limitado a operaciones síncronas
-- Recomendado solo para desarrollo/demo
-
-
----
-
 ## 📄 Variables de Entorno
 
 ```bash
 # Puerto del servidor
 PORT=8080
 
-# Modo de ejecución (development/production)
+# Entorno (development/production)
 NODE_ENV=development
 
-# Modo demo - muestra stack traces completos
-DEMO_MODE=true
+# Persistencia: mongo | fs
+PERSISTENCE=mongo
 
-# Inicialización automática de datos
-SEED_ON_START=false
+# Conexión a Mongo Atlas
+MONGO_URI="mongodb+srv://<user>:<pass>@<cluster>.mongodb.net/airsoft"
 
-# Inicialización forzada (sobrescribe datos existentes)
-INIT_DATA_ON_STARTUP=false
+# Base URL para paginación de productos
+BASE_URL=http://localhost:8080
 ```
 
 ---
@@ -358,8 +357,8 @@ INIT_DATA_ON_STARTUP=false
 ### Scripts NPM
 - `npm start`: Producción
 - `npm run dev`: Desarrollo con nodemon
-- `npm run seed`: Inicializa datos de ejemplo
-- `npm run reseed`: Reinicializa datos (forzado)
+- `npm run seed`: Inicializa datos de ejemplo (FS legacy)
+- `npm run reseed`: Reinicializa datos (forzado, FS legacy)
 
 ### Estructura de Commits
 - `feat:` nuevas características
@@ -369,9 +368,7 @@ INIT_DATA_ON_STARTUP=false
 - `test:` pruebas
 - `chore:` tareas de mantenimiento
 
-
-
 ---
 
 **Desarrollado por Luca Gaido para CoderHouse - Backend I**  
-*Entrega #2: API REST + Vistas dinámicas con Handlebars + WebSockets en Tiempo Real*
+*Entrega FINAL: API REST + Vistas dinámicas con Handlebars + WebSockets en Tiempo Real + MongoDB Atlas*

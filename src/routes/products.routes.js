@@ -1,9 +1,10 @@
+// src/routes/products.routes.js
 const express = require('express');
 const productsController = require('../controllers/products.controller');
 
 const router = express.Router();
 
-// GET /api/products - Obtener todos los productos (con filtros opcionales)
+// GET /api/products - Obtener todos los productos (con paginación, filtros, ordenamiento)
 router.get('/', productsController.getAllProducts);
 
 // GET /api/products/:pid - Obtener producto por ID
