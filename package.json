@@ -1,36 +1,38 @@
 {
     "name": "airsoft-ecommerce-api",
     "version": "1.0.0",
-    "description": "API REST para e-commerce de Airsoft - Entrega #1 CoderHouse",
+    "description": "API REST para e-commerce de Airsoft - Entrega FINAL CoderHouse",
     "main": "index.js",
     "scripts": {
-        "start": "node index.js",
-        "dev": "nodemon index.js",
-        "seed": "node scripts/seed.js",
-        "reseed": "node scripts/seed.js --force"
+      "start": "node index.js",
+      "dev": "nodemon index.js",
+      "seed": "node scripts/seed.js",
+      "reseed": "node scripts/seed.js --force",
+      "migrate": "node scripts/migrate.fs.to.mongo.js"
     },
     "keywords": [
-        "airsoft",
-        "ecommerce",
-        "api",
-        "node",
-        "express"
+      "airsoft",
+      "ecommerce",
+      "api",
+      "node",
+      "express"
     ],
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "dotenv": "^16.6.1",
-        "express": "^4.18.2",
-        "express-handlebars": "^8.0.3",
-        "mongoose": "^8.18.3",
-        "mongoose-paginate-v2": "^1.9.1",
-        "morgan": "^1.10.1",
-        "socket.io": "^4.8.1"
+      "dotenv": "^16.6.1",
+      "express": "^4.18.2",
+      "express-handlebars": "^8.0.3",
+      "mongoose": "^8.18.3",
+      "mongoose-paginate-v2": "^1.9.1",
+      "morgan": "^1.10.1",
+      "socket.io": "^4.8.1"
     },
     "devDependencies": {
-        "nodemon": "^3.1.10"
+      "nodemon": "^3.1.10"
     },
     "engines": {
-        "node": ">=18.0.0"
+      "node": ">=18.0.0"
     }
-}
+  }
+  
