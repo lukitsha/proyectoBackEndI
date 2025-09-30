@@ -359,6 +359,7 @@ BASE_URL=http://localhost:8080
 - `npm run dev`: Desarrollo con nodemon
 - `npm run seed`: Inicializa datos de ejemplo (FS legacy)
 - `npm run reseed`: Reinicializa datos (forzado, FS legacy)
+- `npm run migrate`: Inserta en MongoDB todos los productos del seed
 
 ### Estructura de Commits
 - `feat:` nuevas características
