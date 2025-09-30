@@ -13,19 +13,19 @@ const connect = require('./config/db');
 const PORT = process.env.PORT || 8080;
 const USE_MONGO = String(process.env.PERSISTENCE || '').toLowerCase() === 'mongo';
 
-// Permite habilitar la inicialización sólo si lo pedimos por env
+// Permite habilitar la inicialización solo si lo pedimos por env
 const INIT_ON_START = String(process.env.INIT_DATA_ON_STARTUP || 'false').toLowerCase() === 'true';
 
-// 1) Crear server HTTP con la app de Express
+// Crear server HTTP con la app de Express
 const server = http.createServer(app);
 
-// 2) Montar Socket.IO sobre el mismo server
+// Montar Socket.IO sobre el mismo server
 const { Server } = require('socket.io');
 const io = new Server(server, {
   cors: { origin: '*', methods: ['GET', 'POST', 'PUT', 'DELETE'] }
 });
 
-// 3) Hacer disponible `io` dentro de Express (req.app.get('io'))
+// Hacer disponible `io` dentro de Express (req.app.get('io'))
 app.set('io', io);
 
 // Importar el *service instanciado* (NO se instancia aquí)
@@ -34,7 +34,7 @@ const productsService = require('./src/services/products.service');
 // Contador de usuarios para mostrar en consola
 let connectedUsers = 0;
 
-// 4) Eventos base (conexión / desconexión)
+// Eventos base (conexión / desconexión)
 io.on('connection', (socket) => {
   connectedUsers++;
   console.log(`🟢 Cliente conectado: ${socket.id} (Total: ${connectedUsers})`);
@@ -45,7 +45,7 @@ io.on('connection', (socket) => {
     io.emit('products:list', products);
   };
 
-  // 1) Lista inicial para este socket y contador de conectados
+  // Lista inicial para este socket y contador de conectados
   (async () => {
     try {
       const products = await productsService.getAllProducts();
@@ -56,7 +56,7 @@ io.on('connection', (socket) => {
     }
   })();
 
-  // 2) Crear producto vía WS
+  // Crear producto vía WS
   socket.on('ws:createProduct', async (payload, ack) => {
     try {
       const created = await productsService.createProduct(payload);
@@ -69,7 +69,7 @@ io.on('connection', (socket) => {
     }
   });
 
-  // 3) Eliminar producto vía WS
+  // Eliminar producto vía WS
   socket.on('ws:deleteProduct', async (id, ack) => {
     try {
       await productsService.deleteProduct(id);
@@ -102,7 +102,7 @@ io.on('connection', (socket) => {
   });
 });
 
-// 5) Levantar el server
+// Levantar el server
 server.listen(PORT, async () => {
   // Limpiar consola para mejor presentación
   console.clear();

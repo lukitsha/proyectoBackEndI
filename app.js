@@ -34,10 +34,7 @@ app.engine('handlebars', exphbs.engine({
 app.set('view engine', 'handlebars');
 app.set('views', viewsDir);
 
-/* ========= Vistas (Home / Tiempo Real) =========
-   Montaje "a prueba de fallos": si falta el router o tiene un error,
-   no se cae el server y te avisa en consola.
-*/
+/* ========= Vistas (Home / Tiempo Real) ========= */
 (() => {
   try {
     const viewsRouter = require('./src/routes/views.router');
@@ -76,9 +73,7 @@ app.get('/api', (_req, res) => {
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
 
-/* ========= 404 Web (HTML) =========
-   Si acepta HTML y no es /api/*, renderizamos una vista bonita.
-*/
+/* ========= 404 Web (HTML) ========= */
 app.use((req, res, next) => {
   const wantsHTML = req.accepts('html') && !req.originalUrl.startsWith('/api/');
   if (wantsHTML) {
@@ -97,7 +92,6 @@ app.use((req, res) => {
 });
 
 /* ========= Manejo de errores ========= */
-// eslint-disable-next-line no-unused-vars
 app.use((err, _req, res, _next) => {
   const status = err.statusCode || 500;
 

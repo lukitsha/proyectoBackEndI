@@ -1,0 +1,435 @@
+{
+  "info": {
+    "name": "Airsoft API",
+    "_postman_id": "airsoft-api-testing-final",
+    "description": "Colección de pruebas completas para la Entrega FINAL (Airsoft E-commerce API). Incluye productos, carritos, casos de error y vistas, con variables y descripciones paso a paso.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "00 - Ping & Info",
+      "item": [
+        {
+          "name": "API Info",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api",
+            "description": "Verifica que el servidor esté levantado y devuelve endpoints disponibles."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Home (HTML)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/",
+            "description": "Carga la vista Home con Handlebars. Útil para verificar server-side rendering."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "01 - Productos",
+      "item": [
+        {
+          "name": "Crear producto — Réplica (→ PID1)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/products",
+            "description": "Crea una réplica completa para pruebas. Esperado: 201 y data._id → guarda en PID1.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"title\": \"M4A1 Carbine Elite\", \"description\": \"Réplica M4A1 con sistema AEG de alta calidad\", \"code\": \"M4-ELITE-001\", \"price\": 48000, \"category\": \"replicas\", \"stock\": 15, \"status\": true, \"thumbnails\": [\"https://picsum.photos/seed/m4/600/400\"], \"specs\": {\"caliber\": \"6mm\", \"weight\": 2.9, \"length\": 85, \"firingMode\": \"Semi/Full Auto\", \"hopUp\": true}}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 201', function () { pm.response.to.have.status(201); });",
+                  "var data = pm.response.json();",
+                  "pm.test('Tiene _id', function(){ pm.expect(data && data.data && data.data._id).to.exist; });",
+                  "if (data && data.data && data.data._id) {",
+                  "  pm.collectionVariables.set('PID1', data.data._id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Crear producto — BBs (→ PID2)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/products",
+            "description": "Crea BBs para pruebas. Esperado: 201 y data._id → guarda en PID2.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"title\": \"BBs 0.25g Premium\", \"description\": \"Balines 0.25g alta precisión\", \"code\": \"BBS-025-PR\", \"price\": 6500, \"category\": \"bbs\", \"stock\": 2000, \"status\": true, \"thumbnails\": [\"https://picsum.photos/seed/bbs/600/400\"], \"specs\": {\"weight\": 0.25, \"diameter\": 6, \"quantity\": 3000, \"material\": \"Bio\"}}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 201', function () { pm.response.to.have.status(201); });",
+                  "var data = pm.response.json();",
+                  "pm.test('Tiene _id', function(){ pm.expect(data && data.data && data.data._id).to.exist; });",
+                  "if (data && data.data && data.data._id) {",
+                  "  pm.collectionVariables.set('PID2', data.data._id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Crear producto — Battery (→ PID_NUEVO)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/products",
+            "description": "Crea una batería para pruebas de reemplazo de carrito. Guarda _id en PID_NUEVO.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"title\": \"Battery 11.1V 1200mAh\", \"description\": \"Batería LiPo de alto rendimiento\", \"code\": \"BAT-111-1200\", \"price\": 12000, \"category\": \"batteries\", \"stock\": 50, \"status\": true, \"specs\": {\"voltage\": 11.1, \"capacity\": 1200, \"chemistry\": \"LiPo\", \"connector\": \"T-Plug\"}}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 201', function () { pm.response.to.have.status(201); });",
+                  "var data = pm.response.json();",
+                  "if (data && data.data && data.data._id) { pm.collectionVariables.set('PID_NUEVO', data.data._id); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Listar productos (paginación + filtro category)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/products?limit=1&page=1&sort=asc&category=replicas",
+            "description": "Espera payload con 1 producto (limit=1), category=replicas y paginación completa."
+          }
+        },
+        {
+          "name": "Buscar productos (query=M4)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/products?query=M4",
+            "description": "Debe incluir el producto 'M4A1 Carbine Elite' en payload."
+          }
+        },
+        {
+          "name": "Obtener producto por ID (PID1)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/products/{{PID1}}",
+            "description": "Devuelve el producto creado como PID1."
+          }
+        },
+        {
+          "name": "Actualizar producto (precio)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/products/{{PID1}}",
+            "description": "Actualiza el precio de PID1 a 51000.",
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"price\": 51000 }"
+            }
+          }
+        },
+        {
+          "name": "Eliminar producto (PID2)",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/products/{{PID2}}",
+            "description": "Elimina el producto PID2. Útil para probar delete (opcional)."
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 - Carritos",
+      "item": [
+        {
+          "name": "Crear carrito (→ CID)",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/carts",
+            "description": "Crea un carrito vacío y guarda _id en CID."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 201', function(){ pm.response.to.have.status(201); });",
+                  "var data = pm.response.json();",
+                  "if (data && data.data && (data.data._id || data.data.id)) {",
+                  "  pm.collectionVariables.set('CID', data.data._id || data.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Agregar producto a carrito (PID1 x2)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/carts/{{CID}}/product/{{PID1}}",
+            "description": "Agrega el producto PID1 con quantity=2 al carrito CID.",
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"quantity\": 2 }"
+            }
+          }
+        },
+        {
+          "name": "Obtener carrito con populate",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/carts/{{CID}}",
+            "description": "Devuelve el carrito con los productos poblados (objeto completo en products[].product)."
+          }
+        },
+        {
+          "name": "Resumen de carrito",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/carts/{{CID}}/summary",
+            "description": "Retorna totales: totalProducts y totalAmount."
+          }
+        },
+        {
+          "name": "Actualizar SOLO cantidad (PID1 → 5)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/carts/{{CID}}/products/{{PID1}}",
+            "description": "Actualiza quantity de PID1 a 5.",
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"quantity\": 5 }"
+            }
+          }
+        },
+        {
+          "name": "Reemplazar TODOS los productos (PID1 + PID_NUEVO)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/carts/{{CID}}",
+            "description": "Reemplaza los productos del carrito por PID1 x1 y PID_NUEVO x3.",
+            "body": {
+              "mode": "raw",
+              "raw": "[ { \"product\":\"{{PID1}}\", \"quantity\":1 }, { \"product\":\"{{PID_NUEVO}}\", \"quantity\":3 } ]"
+            }
+          }
+        },
+        {
+          "name": "Vaciar carrito",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/carts/{{CID}}",
+            "description": "Elimina todos los productos del carrito."
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 - Casos de error",
+      "item": [
+        {
+          "name": "Producto inexistente (404)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/products/000000000000000000000000",
+            "description": "Debe devolver 404 para un ObjectId válido pero inexistente."
+          }
+        },
+        {
+          "name": "Crear producto sin title (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/products",
+            "description": "Falla de validación por campo requerido faltante.",
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"description\":\"sin title\", \"code\":\"ERR-NO-TITLE\", \"price\": 1, \"category\":\"bbs\", \"stock\": 1, \"status\": true }"
+            }
+          }
+        },
+        {
+          "name": "Crear producto con code duplicado (409)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/products",
+            "description": "Debe fallar por code ya existente (usa M4-ELITE-001).",
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"title\": \"Duplicado\", \"description\":\"dup\", \"code\":\"M4-ELITE-001\", \"price\": 10, \"category\":\"replicas\", \"stock\": 1, \"status\": true }"
+            }
+          }
+        },
+        {
+          "name": "Stock insuficiente al actualizar carrito (400)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/carts/{{CID}}/products/{{PID1}}",
+            "description": "Intenta poner quantity excesiva para forzar error.",
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"quantity\": 9999 }"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 - Vistas (opcional)",
+      "item": [
+        {
+          "name": "Home con paginación (vista)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/?limit=2&page=1&sort=asc&category=replicas",
+            "description": "Render server-side de Home con tarjetas y paginador."
+          }
+        },
+        {
+          "name": "Carrito (vista)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/carts/{{CID}}",
+            "description": "Vista cartelDetail con productos poblados y subtotales."
+          }
+        },
+        {
+          "name": "RealTime Products (vista)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/realtimeproducts",
+            "description": "Vista en tiempo real con WebSockets."
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "PID1",
+      "value": ""
+    },
+    {
+      "key": "PID2",
+      "value": ""
+    },
+    {
+      "key": "PID_NUEVO",
+      "value": ""
+    },
+    {
+      "key": "CID",
+      "value": ""
+    }
+  ]
+}
