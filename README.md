@@ -324,7 +324,7 @@ curl "http://localhost:8080/api/products?minPrice=10000&maxPrice=50000"
 ```
 
 ### Con Postman
-Importar la colección "Testing_POSTMAN(Coleccion).json" incluida en el proyecto para testing completo de todos los endpoints.
+Importar la colección `Testing_POSTMAN(Coleccion).json` incluida en el proyecto para testing completo de todos los endpoints.
 
 
 ### Testing de WebSockets
