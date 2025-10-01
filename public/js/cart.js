@@ -1,15 +1,187 @@
-// Cart Manager - Sistema de carrito con localStorage
+// Cart Manager - Sistema de carrito con localStorage y sincronización con backend
 class CartManager {
     constructor() {
-      this.cartId = localStorage.getItem('cartId');
-      this.cart = this.loadCart();
+      this.cartId = null;
+      this.cart = { products: [] };
+      this.isRecreating = false;
+      this.init();
+    }
+  
+    async init() {
+      // Intentar recuperar datos del localStorage
+      const savedCartId = localStorage.getItem('cartId');
+      const savedCart = localStorage.getItem('cart');
+      
+      if (savedCartId && savedCart) {
+        const localCart = JSON.parse(savedCart);
+        const localProductCount = localCart.products?.length || 0;
+        
+        // Verificar el estado del carrito en el backend
+        const backendCart = await this.getCartFromBackend(savedCartId);
+        
+        if (backendCart) {
+          const backendProductCount = backendCart.products?.length || 0;
+          
+          // CASO 1: Backend tiene productos - usar esos
+          if (backendProductCount > 0) {
+            console.log(`Backend tiene ${backendProductCount} productos, sincronizando...`);
+            this.cartId = savedCartId;
+            this.cart.products = [];
+            
+            backendCart.products.forEach(item => {
+              const product = item.product;
+              if (product && typeof product === 'object') {
+                this.cart.products.push({
+                  id: product._id || product.id,
+                  title: product.title || 'Producto',
+                  price: product.price || 0,
+                  quantity: item.quantity || 1
+                });
+              }
+            });
+            this.saveCart();
+          }
+          // CASO 2: Backend vacío pero localStorage tiene productos - RECREAR
+          else if (localProductCount > 0) {
+            console.log(`Backend vacío pero localStorage tiene ${localProductCount} productos. Recreando...`);
+            // Eliminar el cartId viejo y recrear con productos
+            localStorage.removeItem('cartId');
+            this.cartId = null;
+            await this.recreateCartWithProducts(localCart.products);
+          }
+          // CASO 3: Ambos vacíos - mantener el carrito vacío
+          else {
+            console.log('Carrito vacío en ambos lados');
+            this.cartId = savedCartId;
+            this.cart = { products: [] };
+          }
+        } else {
+          // El carrito no existe en el backend
+          console.log('Carrito no existe en backend');
+          if (localProductCount > 0) {
+            console.log(`Recreando carrito con ${localProductCount} productos del localStorage`);
+            await this.recreateCartWithProducts(localCart.products);
+          } else {
+            this.resetLocalStorage();
+          }
+        }
+      } else if (savedCart) {
+        // Solo hay cart pero no cartId
+        const localCart = JSON.parse(savedCart);
+        if (localCart.products?.length > 0) {
+          console.log('No hay cartId pero hay productos, creando carrito nuevo...');
+          await this.recreateCartWithProducts(localCart.products);
+        } else {
+          this.resetLocalStorage();
+        }
+      } else if (savedCartId) {
+        // Solo hay cartId pero no cart - verificar con backend
+        const backendCart = await this.getCartFromBackend(savedCartId);
+        if (backendCart && backendCart.products?.length > 0) {
+          console.log('Recuperando productos del backend');
+          this.cartId = savedCartId;
+          await this.syncWithBackend();
+        } else {
+          this.resetLocalStorage();
+        }
+      }
+      
       this.updateCartUI();
     }
   
-    // Cargar carrito desde localStorage
-    loadCart() {
-      const cartData = localStorage.getItem('cart');
-      return cartData ? JSON.parse(cartData) : { products: [] };
+    // Obtener carrito del backend
+    async getCartFromBackend(cartId) {
+      try {
+        const response = await fetch(`/api/carts/${cartId}`);
+        if (!response.ok) {
+          console.log(`Carrito ${cartId} no encontrado en backend (${response.status})`);
+          return null;
+        }
+        
+        const data = await response.json();
+        return data.data;
+      } catch (error) {
+        console.error('Error obteniendo carrito del backend:', error);
+        return null;
+      }
+    }
+  
+    // Recrear carrito con productos existentes
+    async recreateCartWithProducts(products) {
+      if (!products || products.length === 0) return;
+      
+      this.isRecreating = true;
+      console.log(`Recreando carrito con ${products.length} productos...`);
+      
+      // Crear nuevo carrito
+      const newCartId = await this.createCart();
+      if (!newCartId) {
+        console.error('No se pudo crear nuevo carrito');
+        this.resetLocalStorage();
+        this.isRecreating = false;
+        return;
+      }
+      
+      // Agregar cada producto al nuevo carrito
+      let successCount = 0;
+      let failCount = 0;
+      
+      for (const product of products) {
+        try {
+          console.log(`Agregando ${product.title} x${product.quantity}...`);
+          const response = await fetch(`/api/carts/${this.cartId}/product/${product.id}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ quantity: product.quantity || 1 })
+          });
+          
+          if (response.ok) {
+            successCount++;
+            console.log(`✓ ${product.title} agregado`);
+          } else {
+            failCount++;
+            console.error(`✗ Error agregando ${product.title}`);
+          }
+        } catch (error) {
+          failCount++;
+          console.error(`Error agregando producto ${product.id}:`, error);
+        }
+      }
+      
+      // Sincronizar con el backend para obtener el estado final
+      await this.syncWithBackend();
+      
+      this.isRecreating = false;
+      
+      if (successCount > 0) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Carrito restaurado',
+          html: `Se restauraron <b>${successCount}</b> productos en tu carrito${failCount > 0 ? `<br><small>${failCount} productos no pudieron ser restaurados</small>` : ''}`,
+          timer: 4000,
+          showConfirmButton: false,
+          background: '#2d2d2d',
+          color: '#e5e5e5'
+        });
+      } else if (failCount > 0) {
+        this.resetLocalStorage();
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No se pudieron restaurar los productos del carrito',
+          background: '#2d2d2d',
+          color: '#e5e5e5'
+        });
+      }
+    }
+  
+    // Resetear localStorage
+    resetLocalStorage() {
+      console.log('Reseteando localStorage...');
+      localStorage.removeItem('cartId');
+      localStorage.removeItem('cart');
+      this.cartId = null;
+      this.cart = { products: [] };
     }
   
     // Guardar carrito en localStorage
@@ -33,8 +205,9 @@ class CartManager {
         
         const data = await response.json();
         this.cartId = data.data._id || data.data.id;
-        this.cart = { products: [] }; // Resetear productos al crear nuevo carrito
+        this.cart = { products: [] };
         this.saveCart();
+        console.log('✓ Nuevo carrito creado:', this.cartId);
         return this.cartId;
       } catch (error) {
         console.error('Error creating cart:', error);
@@ -51,18 +224,14 @@ class CartManager {
   
     // Sincronizar con el backend
     async syncWithBackend() {
-      if (!this.cartId) return;
+      if (!this.cartId) return false;
   
       try {
         const response = await fetch(`/api/carts/${this.cartId}`);
         if (!response.ok) {
-          // Si el carrito no existe en el backend, limpiar localStorage
           if (response.status === 404) {
-            localStorage.removeItem('cartId');
-            localStorage.removeItem('cart');
-            this.cartId = null;
-            this.cart = { products: [] };
-            this.updateCartUI();
+            console.log('Carrito no encontrado en backend, limpiando localStorage');
+            this.resetLocalStorage();
           }
           return false;
         }
@@ -71,14 +240,24 @@ class CartManager {
         const backendCart = data.data;
         
         // Actualizar localStorage con los datos del backend
-        this.cart.products = backendCart.products.map(item => ({
-          id: item.product._id || item.product,
-          title: item.product.title || 'Producto',
-          price: item.product.price || 0,
-          quantity: item.quantity
-        }));
+        this.cart.products = [];
+        
+        if (backendCart.products && backendCart.products.length > 0) {
+          backendCart.products.forEach(item => {
+            const product = item.product;
+            if (product && typeof product === 'object') {
+              this.cart.products.push({
+                id: product._id || product.id,
+                title: product.title || 'Producto',
+                price: product.price || 0,
+                quantity: item.quantity || 1
+              });
+            }
+          });
+        }
         
         this.saveCart();
+        console.log(`✓ Carrito sincronizado: ${this.cart.products.length} productos`);
         return true;
       } catch (error) {
         console.error('Error syncing with backend:', error);
@@ -108,17 +287,10 @@ class CartManager {
         return;
       }
   
-      // Si no hay carrito, crear uno
+      // Si no hay carrito, crear uno nuevo
       if (!this.cartId) {
         const newCartId = await this.createCart();
         if (!newCartId) return;
-      } else {
-        // Verificar que el carrito existe en el backend
-        const exists = await this.syncWithBackend();
-        if (!exists) {
-          const newCartId = await this.createCart();
-          if (!newCartId) return;
-        }
       }
   
       // Agregar al backend
@@ -130,8 +302,26 @@ class CartManager {
         });
   
         if (!response.ok) {
-          const error = await response.json();
-          throw new Error(error.error || 'Error al agregar el producto');
+          if (response.status === 404) {
+            console.log('Carrito no encontrado, creando nuevo...');
+            this.resetLocalStorage();
+            const newCartId = await this.createCart();
+            if (!newCartId) return;
+            
+            const retryResponse = await fetch(`/api/carts/${this.cartId}/product/${productId}`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ quantity })
+            });
+            
+            if (!retryResponse.ok) {
+              const error = await retryResponse.json();
+              throw new Error(error.error || 'Error al agregar el producto');
+            }
+          } else {
+            const error = await response.json();
+            throw new Error(error.error || 'Error al agregar el producto');
+          }
         }
   
         // Actualizar localStorage
@@ -146,10 +336,9 @@ class CartManager {
             quantity
           });
         }
-  
         this.saveCart();
   
-        // Feedback visual mejorado
+        // Feedback visual
         const btn = document.querySelector(`article[data-product-id="${productId}"] .btn-add-cart`);
         if (btn) {
           btn.classList.add('added');
@@ -165,7 +354,7 @@ class CartManager {
         // Reset cantidad
         if (qtyInput) qtyInput.value = 1;
   
-        // SweetAlert2 con animación más suave
+        // Toast de éxito
         const Toast = Swal.mixin({
           toast: true,
           position: 'top-end',
@@ -208,7 +397,7 @@ class CartManager {
     updateCartUI() {
       const cartCount = document.getElementById('cart-count');
       if (cartCount) {
-        const totalItems = this.cart.products.reduce((sum, p) => sum + p.quantity, 0);
+        const totalItems = this.cart?.products?.reduce((sum, p) => sum + (p.quantity || 0), 0) || 0;
         cartCount.textContent = totalItems;
         cartCount.style.display = totalItems > 0 ? 'block' : 'none';
       }
@@ -240,7 +429,6 @@ class CartManager {
   
         if (!response.ok) throw new Error('Error al vaciar el carrito');
   
-        // Limpiar localStorage pero mantener el cartId
         this.cart = { products: [] };
         this.saveCart();
         this.updateCartUI();
@@ -254,7 +442,6 @@ class CartManager {
           color: '#e5e5e5'
         });
   
-        // Recargar la página actual
         setTimeout(() => {
           window.location.reload();
         }, 1500);
@@ -270,21 +457,42 @@ class CartManager {
         });
       }
     }
+  
+    // Eliminar un producto del carrito
+    async removeProduct(productId) {
+      if (!this.cartId) return;
+  
+      try {
+        const response = await fetch(`/api/carts/${this.cartId}/products/${productId}`, {
+          method: 'DELETE'
+        });
+  
+        if (!response.ok) throw new Error('Error al eliminar el producto');
+  
+        this.cart.products = this.cart.products.filter(p => p.id !== productId);
+        this.saveCart();
+        
+        return true;
+      } catch (error) {
+        console.error('Error:', error);
+        throw error;
+      }
+    }
   }
   
-  // Instanciar el manager y sincronizar al cargar
-  const cartManager = new CartManager();
+  // Instanciar el manager
+  let cartManager;
   
-  // Sincronizar con el backend al cargar la página
+  // Inicializar cuando el DOM esté listo
   document.addEventListener('DOMContentLoaded', async () => {
-    if (cartManager.cartId) {
-      await cartManager.syncWithBackend();
-    }
+    cartManager = new CartManager();
   });
   
-  // Funciones globales para los botones
+  // Funciones globales
   function addToCart(productId, title, price, stock) {
-    cartManager.addProduct(productId, title, price, stock);
+    if (cartManager) {
+      cartManager.addProduct(productId, title, price, stock);
+    }
   }
   
   function increaseQty(productId, maxStock) {
@@ -304,8 +512,25 @@ class CartManager {
   }
   
   function goToCart() {
-    if (cartManager.cartId) {
-      window.location.href = `/carts/${cartManager.cartId}`;
+    if (cartManager && cartManager.cartId) {
+      // Si está recreando, esperar un poco
+      if (cartManager.isRecreating) {
+        Swal.fire({
+          icon: 'info',
+          title: 'Restaurando carrito',
+          text: 'Por favor espera mientras se restauran tus productos...',
+          timer: 3000,
+          showConfirmButton: false,
+          background: '#2d2d2d',
+          color: '#e5e5e5'
+        });
+        
+        setTimeout(() => {
+          window.location.href = `/carts/${cartManager.cartId}`;
+        }, 3000);
+      } else {
+        window.location.href = `/carts/${cartManager.cartId}`;
+      }
     } else {
       Swal.fire({
         icon: 'info',
@@ -317,7 +542,57 @@ class CartManager {
     }
   }
   
-  // Para la vista del carrito
   function clearCartFromView() {
-    cartManager.clearCart();
+    if (cartManager) {
+      cartManager.clearCart();
+    }
+  }
+  
+  async function removeFromCart(cartId, productId) {
+    const result = await Swal.fire({
+      title: '¿Eliminar producto?',
+      text: 'Se quitará este producto del carrito',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#dc2626',
+      cancelButtonColor: '#404040',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      background: '#2d2d2d',
+      color: '#e5e5e5'
+    });
+  
+    if (!result.isConfirmed) return;
+  
+    try {
+      if (cartManager) {
+        await cartManager.removeProduct(productId);
+      } else {
+        const response = await fetch(`/api/carts/${cartId}/products/${productId}`, {
+          method: 'DELETE'
+        });
+        if (!response.ok) throw new Error('Error al eliminar el producto');
+      }
+  
+      Swal.fire({
+        icon: 'success',
+        title: 'Producto eliminado',
+        timer: 1500,
+        showConfirmButton: false,
+        background: '#2d2d2d',
+        color: '#e5e5e5'
+      });
+  
+      setTimeout(() => location.reload(), 1500);
+  
+    } catch (error) {
+      console.error('Error:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'No se pudo eliminar el producto',
+        background: '#2d2d2d',
+        color: '#e5e5e5'
+      });
+    }
   }

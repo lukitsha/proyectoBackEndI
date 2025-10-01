@@ -50,7 +50,8 @@
     <p><strong>Última actualización:</strong> {{cart.updatedAt}}</p>
   </div>
 
-  {{#if cart.products.length}}
+  {{!-- CAMBIO CRÍTICO: No usar cart.products.length, usar #if cart.products --}}
+  {{#if cart.products}}
     <div class="grid">
       {{#each cart.products}}
         <div class="item" data-item-id="{{this.product._id}}">
@@ -72,21 +73,32 @@
             <p class="item-subtotal">Subtotal: ${{multiply this.quantity this.product.price}}</p>
           </div>
         </div>
+      {{else}}
+        {{!-- Si no hay productos en el each --}}
+        <div class="empty">
+          <h3>Tu carrito está vacío</h3>
+          <p>Agrega productos desde el catálogo para comenzar tu compra</p>
+          <div style="margin-top:25px">
+            <a href="/" class="btn">🛍️ Ir al Catálogo</a>
+          </div>
+        </div>
       {{/each}}
     </div>
 
-    <div class="cart-summary">
-      <h3>Resumen del carrito</h3>
-      <p class="line">Total de productos: {{summary.totalProducts}}</p>
-      <p class="line">Monto total: </p>
-      <p class="total">${{summary.totalAmount}}</p>
-    </div>
+    {{#if cart.products}}
+      <div class="cart-summary">
+        <h3>Resumen del carrito</h3>
+        <p class="line">Total de productos: {{summary.totalProducts}}</p>
+        <p class="line">Monto total: </p>
+        <p class="total">${{summary.totalAmount}}</p>
+      </div>
 
-    <div class="actions">
-      <a href="/" class="btn btn-secondary">⬅️ Seguir Comprando</a>
-      <button onclick="clearCartFromView()" class="btn btn-danger">🗑️ Vaciar Carrito</button>
-      <a href="#" class="btn btn-success">💳 Finalizar Compra</a>
-    </div>
+      <div class="actions">
+        <a href="/" class="btn btn-secondary">⬅️ Seguir Comprando</a>
+        <button onclick="clearCartFromView()" class="btn btn-danger">🗑️ Vaciar Carrito</button>
+        <a href="#" class="btn btn-success">💳 Finalizar Compra</a>
+      </div>
+    {{/if}}
   {{else}}
     <div class="empty">
       <h3>Tu carrito está vacío</h3>

@@ -56,15 +56,6 @@ router.get('/', async (req, res, next) => {
           items: result.payload.filter(p => p.category === 'batteries')
         }
       ];
-      
-      // Debug para verificar que los datos llegan
-      console.log('📊 Productos agrupados:');
-      groupedProducts.forEach(group => {
-        console.log(`   ${group.title}: ${group.items.length} items`);
-        if (group.items.length > 0) {
-          console.log(`   → Ejemplo: ${group.items[0].title} - $${group.items[0].price}`);
-        }
-      });
     }
 
     // Títulos de categoría para cuando hay filtro
@@ -91,39 +82,26 @@ router.get('/', async (req, res, next) => {
     const totalDocs = replicasCount + magazinesCount + bbsCount + batteriesCount;
     const hasAnyProducts = totalDocs > 0;
 
-    // IMPORTANTE: Asegurar que los productos tienen todos sus campos
     const dataToRender = {
       pageTitle: 'Home',
       isHome: true,
-      // Pasar el resultado completo
       payload: result.payload,
       totalPages: result.totalPages,
       page: result.page,
       hasPrevPage: result.hasPrevPage,
       hasNextPage: result.hasNextPage,
-      // Datos agrupados
       groupedProducts,
-      // Categoría actual
       currentCategory: category,
       currentCategoryTitle: categoryTitles[category],
-      // Contadores
       replicasCount,
       magazinesCount,
       bbsCount,
       batteriesCount,
       totalDocs,
       hasAnyProducts,
-      // Links
       prevLink: buildLink(result.prevPage),
       nextLink: buildLink(result.nextPage)
     };
-
-    // Debug final
-    console.log('🎯 Renderizando home con:', {
-      totalProducts: dataToRender.payload?.length || 0,
-      hasGroupedProducts: !!dataToRender.groupedProducts,
-      currentCategory: dataToRender.currentCategory || 'none'
-    });
 
     res.render('pages/home', dataToRender);
     
@@ -154,6 +132,5 @@ router.get('/carts/:cid', async (req, res, next) => {
     next(err);
   }
 });
-
 
 module.exports = router;

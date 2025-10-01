@@ -8,11 +8,13 @@ class CartsMongoDAO {
   }
 
   async getById(id) {
-    return Cart.findById(id);
+    return await Cart.findById(id).lean();  // lean para permisos
   }
 
   async getPopulated(id) {
-    return Cart.findById(id).populate('products.product');
+    return await Cart.findById(id)
+      .populate('products.product')
+      .lean();  // permitimos el acceeso a handlebars para manejarlo
   }
 
   async replaceProducts(id, products) {
