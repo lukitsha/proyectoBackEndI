@@ -2,10 +2,12 @@
   .cart-container{background:#2d2d2d;border-radius:12px;padding:35px;box-shadow:0 10px 40px rgba(0,0,0,.3)}
   .page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;padding-bottom:18px;border-bottom:2px solid #404040}
   .page-title{font-size:1.8rem;color:#e5e5e5;display:flex;align-items:center;gap:12px}
+  .cart-id{background:#1a1a1a;border:1px solid #404040;border-radius:8px;padding:8px 14px;color:#a3a3a3;font-size:.85rem;font-family:monospace}
   .cart-info{background:#1a1a1a;border:1px solid #404040;border-radius:8px;padding:12px 18px;color:#a3a3a3;font-size:.9rem;margin-bottom:20px}
   
   .grid{display:grid;grid-template-columns:1fr;gap:16px}
-  .item{background:#1a1a1a;border:1px solid #404040;border-radius:10px;padding:18px;display:flex;gap:16px;align-items:center}
+  .item{background:#1a1a1a;border:1px solid #404040;border-radius:10px;padding:18px;display:flex;gap:16px;align-items:center;position:relative;transition:all 0.3s}
+  .item:hover{border-color:#dc2626;box-shadow:0 4px 15px rgba(220,38,38,.2)}
   .item .thumb{width:120px;flex-shrink:0;border-radius:8px;background:#fff;display:flex;align-items:center;justify-content:center;border:1px solid #e5e5e5;overflow:hidden}
   .item .thumb img{width:100%;height:100%;object-fit:contain}
   
@@ -16,19 +18,30 @@
   .item-price{color:#dc2626;font-weight:900;font-size:1rem}
   .item-subtotal{color:#fff;font-weight:600;font-size:.9rem;margin-top:6px}
   
+  .item-remove{position:absolute;top:15px;right:15px;background:#dc2626;color:#fff;border:none;width:30px;height:30px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.3s}
+  .item-remove:hover{background:#b91c1c;transform:scale(1.1)}
+  
   .cart-summary{margin-top:28px;padding:20px;background:#1a1a1a;border:1px solid #404040;border-radius:10px;text-align:right}
   .cart-summary h3{color:#e5e5e5;font-size:1.2rem;margin-bottom:10px}
   .cart-summary .line{color:#a3a3a3;margin:4px 0}
   .cart-summary .total{font-size:1.4rem;font-weight:900;color:#dc2626;margin-top:12px}
   
-  .actions{margin-top:20px;display:flex;justify-content:space-between;align-items:center}
-  .btn{display:inline-block;background:#dc2626;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;transition:.25s}
+  .actions{margin-top:20px;display:flex;justify-content:space-between;align-items:center;gap:15px}
+  .btn{display:inline-block;background:#dc2626;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;transition:.25s;border:none;cursor:pointer}
   .btn:hover{background:#b91c1c;transform:translateY(-2px)}
+  .btn-secondary{background:#404040}
+  .btn-secondary:hover{background:#525252}
+  .btn-danger{background:#dc2626}
+  .btn-success{background:#16a34a}
+  .btn-success:hover{background:#15803d}
+  
+  .empty{text-align:center;padding:60px;background:#1a1a1a;border:1px solid #404040;border-radius:10px;color:#737373}
+  .empty h3{color:#e5e5e5;margin-bottom:10px}
 </style>
 
 <div class="cart-container">
   <div class="page-header">
-    <h1 class="page-title"><span>🛒</span> Carrito</h1>
+    <h1 class="page-title"><span>🛒</span> Mi Carrito</h1>
     <span class="cart-id">ID: {{cart._id}}</span>
   </div>
 
@@ -40,7 +53,9 @@
   {{#if cart.products.length}}
     <div class="grid">
       {{#each cart.products}}
-        <div class="item">
+        <div class="item" data-item-id="{{this.product._id}}">
+          <button class="item-remove" onclick="removeFromCart('{{../cart._id}}', '{{this.product._id}}')" title="Eliminar producto">✕</button>
+          
           <div class="thumb">
             {{#if this.product.thumbnails.[0]}}
               <img src="{{this.product.thumbnails.[0]}}" alt="{{this.product.title}}">
@@ -48,6 +63,7 @@
               <div style="font-size:2rem;color:#525252">🎯</div>
             {{/if}}
           </div>
+          
           <div class="item-details">
             <h3 class="item-title">{{this.product.title}}</h3>
             <p class="item-desc">{{this.product.description}}</p>
@@ -65,12 +81,73 @@
       <p class="line">Monto total: </p>
       <p class="total">${{summary.totalAmount}}</p>
     </div>
-  {{else}}
-    <div class="empty">Tu carrito está vacío.</div>
-  {{/if}}
 
-  <div class="actions">
-    <a href="/products" class="btn">⬅️ Volver al Catálogo</a>
-    <a href="#" class="btn">💳 Finalizar Compra</a>
-  </div>
+    <div class="actions">
+      <a href="/" class="btn btn-secondary">⬅️ Seguir Comprando</a>
+      <button onclick="clearCartFromView()" class="btn btn-danger">🗑️ Vaciar Carrito</button>
+      <a href="#" class="btn btn-success">💳 Finalizar Compra</a>
+    </div>
+  {{else}}
+    <div class="empty">
+      <h3>Tu carrito está vacío</h3>
+      <p>Agrega productos desde el catálogo para comenzar tu compra</p>
+      <div style="margin-top:25px">
+        <a href="/" class="btn">🛍️ Ir al Catálogo</a>
+      </div>
+    </div>
+  {{/if}}
 </div>
+
+<script>
+async function removeFromCart(cartId, productId) {
+  const result = await Swal.fire({
+    title: '¿Eliminar producto?',
+    text: 'Se quitará este producto del carrito',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonColor: '#dc2626',
+    cancelButtonColor: '#404040',
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar',
+    background: '#2d2d2d',
+    color: '#e5e5e5'
+  });
+
+  if (!result.isConfirmed) return;
+
+  try {
+    const response = await fetch(`/api/carts/${cartId}/products/${productId}`, {
+      method: 'DELETE'
+    });
+
+    if (!response.ok) throw new Error('Error al eliminar el producto');
+
+    // Actualizar localStorage
+    const cart = JSON.parse(localStorage.getItem('cart') || '{"products":[]}');
+    cart.products = cart.products.filter(p => p.id !== productId);
+    localStorage.setItem('cart', JSON.stringify(cart));
+
+    Swal.fire({
+      icon: 'success',
+      title: 'Producto eliminado',
+      timer: 1500,
+      showConfirmButton: false,
+      background: '#2d2d2d',
+      color: '#e5e5e5'
+    });
+
+    // Recargar la página para actualizar
+    setTimeout(() => location.reload(), 1500);
+
+  } catch (error) {
+    console.error('Error:', error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'No se pudo eliminar el producto',
+      background: '#2d2d2d',
+      color: '#e5e5e5'
+    });
+  }
+}
+</script>

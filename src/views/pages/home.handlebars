@@ -33,7 +33,7 @@
     transition:.25s;
     display:flex;
     flex-direction:column;
-    min-height:420px;
+    min-height:480px;
   }
   .card::before{content:'';position:absolute;inset:auto auto 0 0;height:3px;width:100%;background:#dc2626;opacity:.8}
   .card:hover{transform:translateY(-2px);border-color:#dc2626;box-shadow:0 5px 20px rgba(220,38,38,.2)}
@@ -130,6 +130,99 @@
   .pagination a {background:#1a1a1a;border:1px solid #404040;color:#e5e5e5;transition:.2s}
   .pagination a:hover {border-color:#dc2626;color:#fff;background:#dc2626}
   .pagination span {background:#dc2626;border:1px solid #dc2626;color:#fff}
+
+  /* Nueva sección de botones de carrito */
+  .cart-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 10px;
+  }
+
+  .btn-add-cart {
+    flex: 1;
+    background: #16a34a;
+    color: #fff;
+    border: none;
+    padding: 10px 12px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: .82rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    white-space: nowrap;
+    min-width: 90px;
+}
+
+  .btn-add-cart:hover:not(:disabled) {
+    background: #15803d;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(22, 163, 74, .3);
+  }
+
+  .btn-add-cart:disabled {
+    background: #404040;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  .btn-add-cart.added {
+    background: #dc2626;
+    animation: pulse 0.5s;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+
+  .qty-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #0d0d0d;
+    border: 1px solid #404040;
+    border-radius: 6px;
+    padding: 4px;
+  }
+
+  .qty-btn {
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: #dc2626;
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+
+  .qty-btn:hover:not(:disabled) {
+    background: #b91c1c;
+  }
+
+  .qty-btn:disabled {
+    background: #404040;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  .qty-input {
+    width: 40px;
+    text-align: center;
+    background: transparent;
+    border: none;
+    color: #e5e5e5;
+    font-weight: 600;
+  }
 </style>
 
 <div class="home-container">
@@ -181,7 +274,7 @@
         {{#if payload}}
           <div class="grid">
             {{#each payload}}
-              <article class="card">
+              <article class="card" data-product-id="{{_id}}">
                 <div class="card-header">
                   <span class="pid">ID: {{_id}}</span>
                   <span class="cat">{{category}}</span>
@@ -214,6 +307,22 @@
                     Stock: {{stock}}
                   </span>
                 </div>
+
+                <div class="cart-actions">
+                  <div class="qty-controls">
+                    <button class="qty-btn" onclick="decreaseQty('{{_id}}')" {{#if (eq stock 0)}}disabled{{/if}}>−</button>
+                    <input type="number" class="qty-input" id="qty-{{_id}}" value="1" min="1" max="{{stock}}" readonly>
+                    <button class="qty-btn" onclick="increaseQty('{{_id}}', {{stock}})" {{#if (eq stock 0)}}disabled{{/if}}>+</button>
+                  </div>
+                  <button class="btn-add-cart" onclick="addToCart('{{_id}}', '{{title}}', {{price}}, {{stock}})" {{#if (eq stock 0)}}disabled{{/if}}>
+                    <span>🛒</span>
+                    {{#if (eq stock 0)}}
+                      Sin Stock
+                    {{else}}
+                      Agregar
+                    {{/if}}
+                  </button>
+                </div>
               </article>
             {{/each}}
           </div>
@@ -234,7 +343,7 @@
             {{#if this.items.length}}
               <div class="grid">
                 {{#each this.items}}
-                  <article class="card">
+                  <article class="card" data-product-id="{{_id}}">
                     <div class="card-header">
                       <span class="pid">ID: {{_id}}</span>
                       <span class="cat">{{../badge}}</span>
@@ -266,6 +375,22 @@
                       <span class="stock {{#if (eq stock 0)}}out{{else}}{{#if (lte stock 10)}}low{{/if}}{{/if}}">
                         Stock: {{stock}}
                       </span>
+                    </div>
+
+                    <div class="cart-actions">
+                      <div class="qty-controls">
+                        <button class="qty-btn" onclick="decreaseQty('{{_id}}')" {{#if (eq stock 0)}}disabled{{/if}}>−</button>
+                        <input type="number" class="qty-input" id="qty-{{_id}}" value="1" min="1" max="{{stock}}" readonly>
+                        <button class="qty-btn" onclick="increaseQty('{{_id}}', {{stock}})" {{#if (eq stock 0)}}disabled{{/if}}>+</button>
+                      </div>
+                      <button class="btn-add-cart" onclick="addToCart('{{_id}}', '{{title}}', {{price}}, {{stock}})" {{#if (eq stock 0)}}disabled{{/if}}>
+                        <span>🛒</span>
+                        {{#if (eq stock 0)}}
+                          Sin Stock
+                        {{else}}
+                          Agregar
+                        {{/if}}
+                      </button>
                     </div>
                   </article>
                 {{/each}}

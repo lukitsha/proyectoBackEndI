@@ -4,6 +4,15 @@
       <div class="logo-icon">🎯</div>
       <span>Airsoft Store</span>
     </a>
+    
+    <div class="cart-icon-center">
+      <a href="javascript:void(0)" onclick="goToCart()" class="cart-btn">
+        <span style="font-size: 1.3rem;">🛒</span>
+        <span>Mi Carrito</span>
+        <span id="cart-count" class="cart-count" style="display: none;">0</span>
+      </a>
+    </div>
+    
     <div class="nav-links">
       <a href="/" class="{{#if isHome}}active{{/if}}">
         <span class="icon">🏠</span>
