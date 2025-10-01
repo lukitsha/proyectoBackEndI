@@ -1,5 +1,5 @@
 const { VALID_CATEGORIES, PAGINATION, FILTERS } = require('../../config/config');
-const { ProductsDAO } = require('../dao/factory'); // <- usa factory (FS ↔ Mongo)
+const { ProductsDAO } = require('../dao/factory');
 const useMongo = String(process.env.PERSISTENCE || '').toLowerCase() === 'mongo';
 
 class ProductsService {
@@ -36,6 +36,23 @@ class ProductsService {
     if (typeof this.productsDAO.delete === 'function') return this.productsDAO.delete(id);
     if (typeof this.productsDAO.deleteProduct === 'function') return this.productsDAO.deleteProduct(id);
     throw new Error('DAO no soporta delete');
+  }
+
+  // ========== NUEVO MÉTODO PARA CONTAR POR CATEGORÍA ==========
+  async countByCategory(category) {
+    try {
+      // Si el DAO de Mongo tiene el método específico, úsalo
+      if (this.productsDAO.countByCategory) {
+        return await this.productsDAO.countByCategory(category);
+      }
+      
+      // Fallback para FileSystem o si no existe el método
+      const all = await this._daoGetAll();
+      return all.filter(p => p.category === category).length;
+    } catch (error) {
+      console.error(`Error contando categoría ${category}:`, error);
+      return 0;
+    }
   }
 
   // ------------- Helpers de unicidad y validación -------------------
@@ -77,7 +94,7 @@ class ProductsService {
       }
     }
 
-    // code (obligatorio en create; opcional en update)
+    // code
     if (!isUpdate || productData.code !== undefined) {
       if (
         typeof productData.code !== 'string' ||
@@ -124,7 +141,7 @@ class ProductsService {
       }
     }
 
-    // thumbnails: si se envía, debe ser array<string>
+    // thumbnails
     if (productData.thumbnails !== undefined) {
       if (
         !Array.isArray(productData.thumbnails) ||
@@ -134,7 +151,7 @@ class ProductsService {
       }
     }
 
-    // Validaciones específicas por categoría (usa specs)
+    // Validaciones específicas por categoría
     this.validateCategorySpecificFields(productData, errors, isUpdate);
 
     if (errors.length > 0) {
@@ -315,10 +332,10 @@ class ProductsService {
 
   // ---------- NUEVO: listado con formato de la rúbrica ----------
   async listWithPagination({ limit = 10, page = 1, sort, query = {}, baseUrl }) {
-    // Normalizar sort a asc/desc por precio (consigna)
+    // Normalizar sort a asc/desc por precio
     const priceSort = sort === 'asc' || sort === 'desc' ? sort : undefined;
 
-    // Normalizar query permitido por consigna
+    // Normalizar query permitido
     const normalizedQuery = {
       category: query.category,
       status: (query.status === 'true') ? true : (query.status === 'false') ? false : undefined,
@@ -334,7 +351,7 @@ class ProductsService {
         query: normalizedQuery
       });
 
-      const { docs, totalPages, page: cur, prevPage, nextPage, hasPrevPage, hasNextPage } = result;
+      const { docs, totalPages, page: cur, prevPage, nextPage, hasPrevPage, hasNextPage, totalDocs } = result;
 
       const mkLink = (p) => p ? `${baseUrl}/api/products?` + new URLSearchParams({
         page: p,
@@ -355,11 +372,12 @@ class ProductsService {
         hasPrevPage,
         hasNextPage,
         prevLink: mkLink(prevPage),
-        nextLink: mkLink(nextPage)
+        nextLink: mkLink(nextPage),
+        totalDocs // Agregar totalDocs para el contador
       };
     }
 
-    // --- Modo FS (legacy): respeta tu lógica previa y adapta formato ---
+    // --- Modo FS (legacy) ---
     const filters = this.validateFilters({
       category: query.category,
       status: query.status,
@@ -372,8 +390,8 @@ class ProductsService {
     const pagination = this.validatePagination({
       limit: String(limit),
       page: String(page),
-      sort: 'price',            // consigna: ordenar por price
-      order: priceSort || 'asc' // si no mandan sort, default sin orden — acá usamos asc para determinismo
+      sort: 'price',
+      order: priceSort || 'asc'
     });
 
     const { products, pagination: meta } = this.applyPagination(all, pagination);
@@ -397,15 +415,15 @@ class ProductsService {
       hasPrevPage: meta.hasPrev,
       hasNextPage: meta.hasNext,
       prevLink: mkLink(meta.hasPrev ? meta.page - 1 : null),
-      nextLink: mkLink(meta.hasNext ? meta.page + 1 : null)
+      nextLink: mkLink(meta.hasNext ? meta.page + 1 : null),
+      totalDocs: all.length // Total de productos para FS
     };
   }
 
-  // ---------- Casos de uso (compatibles con tus websockets) ----------
+  // ---------- Casos de uso (compatibles con websockets) ----------
   async getAllProducts(query = {}) {
     // Usado por WS para listar
     if (useMongo) {
-      // listar sin paginado (todos)
       if (typeof this.productsDAO.getAll === 'function') {
         return this.productsDAO.getAll();
       }
@@ -443,10 +461,8 @@ class ProductsService {
     const payload = { thumbnails: [], status: true, ...productData };
     this.validateProductData(payload);
 
-    // Unicidad de code (además del índice unique en Mongo)
     await this.assertUniqueCode(payload.code);
 
-    // En Mongo, el _id lo genera la DB; en FS quedaba tu id manual
     return this._daoCreate({
       ...payload,
       ...(useMongo ? {} : { createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() })

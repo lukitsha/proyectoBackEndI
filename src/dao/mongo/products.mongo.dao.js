@@ -23,6 +23,15 @@ class ProductsMongoDAO {
     return Product.findByIdAndDelete(id);
   }
 
+  // ========== NUEVO MÉTODO PARA CONTAR POR CATEGORÍA ==========
+  async countByCategory(category) {
+    try {
+      return await Product.countDocuments({ category });
+    } catch (error) {
+      throw new Error(`Error contando productos por categoría: ${error.message}`);
+    }
+  }
+
   /**
    * Paginación + filtros + ordenamiento por precio (asc/desc)
    * query admitido:
@@ -46,6 +55,7 @@ class ProductsMongoDAO {
     const options = {
       page: Number(page) || 1,
       limit: Number(limit) || 10,
+      lean: true,
     };
     if (sort === 'asc' || sort === 'desc') {
       options.sort = { price: sort === 'asc' ? 1 : -1 };

@@ -119,6 +119,7 @@
   .stock.low{border-color:#dc2626;color:#dc2626}
   .stock.out{background:#dc2626;color:#fff;border-color:#dc2626}
   .empty{margin:12px 0;background:#1a1a1a;border:1px solid #404040;border-radius:10px;padding:28px;color:#737373;text-align:center}
+  .empty-global{margin:40px 0;background:#1a1a1a;border:1px solid #404040;border-radius:10px;padding:50px;color:#737373;text-align:center}
   .action-section{text-align:center;margin-top:34px;padding-top:24px;border-top:1px solid #404040}
   .btn{display:inline-block;background:#dc2626;color:#fff;padding:14px 30px;border-radius:8px;text-decoration:none;font-weight:700;transition:.25s;box-shadow:0 4px 15px rgba(220,38,38,.3)}
   .btn:hover{background:#b91c1c;transform:translateY(-2px);box-shadow:0 6px 20px rgba(220,38,38,.4)}
@@ -134,47 +135,56 @@
 <div class="home-container">
   <div class="page-header">
     <h1 class="page-title"><span>📦</span> Catálogo de Productos</h1>
-
-    {{!-- Prioriza contador de página paginada; si no, usa productsCount del modo antiguo --}}
-    {{#if payload}}
-      <span class="product-count">{{payload.length}} en esta página</span>
-    {{else if productsCount}}
-      <span class="product-count">{{productsCount}} productos</span>
+    {{#if totalDocs}}
+      <span class="product-count">{{totalDocs}} productos totales</span>
     {{/if}}
   </div>
 
-  {{!-- ====== MODO ANTIGUO (agrupado por categoría) ====== --}}
-  {{#if productsByCategory}}
-    {{!-- Filtros solo si vienen en el contexto --}}
-    {{#if filters}}
-      <div class="filters">
-        <a href="/" class="chip total {{#if (eq filters.active 'all')}}active{{/if}}">
-          <span class="dot"></span> Todos
-          <span class="count">{{filters.total}}</span>
-        </a>
-        {{#each filters.categories}}
-          <a href="/?category={{this.key}}"
-             class="chip {{#if (eq ../filters.active this.key)}}active{{/if}}">
-            <span class="dot"></span> {{this.title}}
-            <span class="count">{{this.count}}</span>
-          </a>
-        {{/each}}
-      </div>
-    {{/if}}
+  {{!-- ====== FILTROS (siempre visibles) ====== --}}
+  <div class="filters">
+    <a href="/" class="chip total {{#unless currentCategory}}active{{/unless}}">
+      <span class="dot"></span> Todos
+      <span class="count">{{totalDocs}}</span>
+    </a>
+    <a href="/?category=replicas" class="chip {{#if (eq currentCategory 'replicas')}}active{{/if}}">
+      <span class="dot"></span> Réplicas
+      <span class="count">{{replicasCount}}</span>
+    </a>
+    <a href="/?category=magazines" class="chip {{#if (eq currentCategory 'magazines')}}active{{/if}}">
+      <span class="dot"></span> Cargadores
+      <span class="count">{{magazinesCount}}</span>
+    </a>
+    <a href="/?category=bbs" class="chip {{#if (eq currentCategory 'bbs')}}active{{/if}}">
+      <span class="dot"></span> BBs
+      <span class="count">{{bbsCount}}</span>
+    </a>
+    <a href="/?category=batteries" class="chip {{#if (eq currentCategory 'batteries')}}active{{/if}}">
+      <span class="dot"></span> Baterías
+      <span class="count">{{batteriesCount}}</span>
+    </a>
+  </div>
 
-    {{#each productsByCategory}}
+  {{!-- Si NO hay productos en absoluto --}}
+  {{#unless hasAnyProducts}}
+    <div class="empty-global">
+      <h3>No hay productos disponibles</h3>
+      <p>Aún no se han agregado productos al catálogo</p>
+    </div>
+  {{else}}
+    {{!-- Si hay filtro de categoría activo --}}
+    {{#if currentCategory}}
       <section class="cat-block">
         <h2 class="cat-title">
-          {{this.title}} <span class="cat-badge">{{this.items.length}}</span>
+          {{currentCategoryTitle}} 
+          <span class="cat-badge">{{#if payload}}{{payload.length}}{{else}}0{{/if}}</span>
         </h2>
-
-        {{#if this.items.length}}
+        {{#if payload}}
           <div class="grid">
-            {{#each this.items}}
+            {{#each payload}}
               <article class="card">
                 <div class="card-header">
                   <span class="pid">ID: {{_id}}</span>
-                  <span class="cat">{{../badge}}</span>
+                  <span class="cat">{{category}}</span>
                 </div>
 
                 <div class="card-content">
@@ -211,68 +221,78 @@
           <div class="empty">No hay productos en esta categoría.</div>
         {{/if}}
       </section>
-    {{/each}}
-  {{/if}}
 
-  {{!-- ====== MODO NUEVO (paginado desde /api/products) ====== --}}
-  {{#if payload}}
-    <div class="grid">
-      {{#each payload}}
-        <article class="card">
-          <div class="card-header">
-            <span class="pid">ID: {{_id}}</span>
-            <span class="cat">{{category}}</span>
-          </div>
+    {{else}}
+      {{!-- Vista de TODAS las categorías (sin filtro) --}}
+      {{#if groupedProducts}}
+        {{#each groupedProducts}}
+          <section class="cat-block">
+            <h2 class="cat-title">
+              {{this.title}} <span class="cat-badge">{{this.items.length}}</span>
+            </h2>
 
-          <div class="card-content">
-            <div class="thumb">
-              {{#if thumbnails.[0]}}
-                <img src="{{thumbnails.[0]}}" alt="{{title}}">
-              {{else}} 
-                <div style="font-size:2.2rem;color:#525252">🎯</div>
-              {{/if}}
-            </div>
+            {{#if this.items.length}}
+              <div class="grid">
+                {{#each this.items}}
+                  <article class="card">
+                    <div class="card-header">
+                      <span class="pid">ID: {{_id}}</span>
+                      <span class="cat">{{../badge}}</span>
+                    </div>
 
-            <h3 class="title">{{title}}</h3>
-            <p class="desc">{{#if description}}{{description}}{{else}}Sin descripción{{/if}}</p>
+                    <div class="card-content">
+                      <div class="thumb">
+                        {{#if thumbnails.[0]}}
+                          <img src="{{thumbnails.[0]}}" alt="{{title}}">
+                        {{else}} 
+                          <div style="font-size:2.2rem;color:#525252">🎯</div>
+                        {{/if}}
+                      </div>
 
-            {{#if specs}}
-              <div class="specs">
-                {{#each specs}}
-                  <span class="spec"><strong>{{@key}}:</strong> {{this}}</span>
+                      <h3 class="title">{{title}}</h3>
+                      <p class="desc">{{#if description}}{{description}}{{else}}Sin descripción{{/if}}</p>
+
+                      {{#if specs}}
+                        <div class="specs">
+                          {{#each specs}}
+                            <span class="spec"><strong>{{@key}}:</strong> {{this}}</span>
+                          {{/each}}
+                        </div>
+                      {{/if}}
+                    </div>
+
+                    <div class="card-footer">
+                      <span class="price">${{price}}</span>
+                      <span class="stock {{#if (eq stock 0)}}out{{else}}{{#if (lte stock 10)}}low{{/if}}{{/if}}">
+                        Stock: {{stock}}
+                      </span>
+                    </div>
+                  </article>
                 {{/each}}
               </div>
+            {{else}}
+              <div class="empty">No hay productos en esta categoría.</div>
             {{/if}}
-          </div>
-
-          <div class="card-footer">
-            <span class="price">${{price}}</span>
-            <span class="stock {{#if (eq stock 0)}}out{{else}}{{#if (lte stock 10)}}low{{/if}}{{/if}}">
-              Stock: {{stock}}
-            </span>
-          </div>
-        </article>
-      {{/each}}
-    </div>
-
-    {{!-- Paginación --}}
-    <div class="pagination">
-      {{#if hasPrevPage}}
-        <a href="{{prevLink}}">« Anterior</a>
+          </section>
+        {{/each}}
       {{/if}}
+    {{/if}}
 
-      <span>Página {{page}} / {{totalPages}}</span>
+    {{!-- Paginación (solo si hay productos) --}}
+    {{#if payload}}
+      <div class="pagination">
+        {{#if hasPrevPage}}
+          <a href="{{prevLink}}">« Anterior</a>
+        {{/if}}
 
-      {{#if hasNextPage}}
-        <a href="{{nextLink}}">Siguiente »</a>
-      {{/if}}
-    </div>
-  {{else}}
-    {{!-- Si no hay payload ni productsByCategory --}}
-    {{#unless productsByCategory}}
-      <div class="empty">No hay productos disponibles.</div>
-    {{/unless}}
-  {{/if}}
+        <span>Página {{page}} / {{totalPages}}</span>
+
+        {{#if hasNextPage}}
+          <a href="{{nextLink}}">Siguiente »</a>
+        {{/if}}
+      </div>
+    {{/if}}
+  {{/unless}}
 
   <div class="action-section">
     <p style="color:#737373;margin-bottom:20px">¿Querés gestionarlos en tiempo real?</p>
